@@ -35,9 +35,13 @@ class DayController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Day $day)
+    public function show($id)
     {
-        //
+        $day = Day::with('stops')->where('id', $id)->get();
+        return response()->json([
+            'success' => true,
+            'day' => $day
+        ]);
     }
 
     /**

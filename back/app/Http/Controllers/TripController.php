@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Trip;
 use App\Http\Requests\StoreTripRequest;
 use App\Http\Requests\UpdateTripRequest;
+use GrahamCampbell\ResultType\Success;
 
 class TripController extends Controller
 {
@@ -13,7 +14,12 @@ class TripController extends Controller
      */
     public function index()
     {
-        //
+        $trips = Trip::all();
+
+        return response()->json([
+            'success' => true,
+            'trips' => $trips
+        ]);
     }
 
     /**
@@ -35,9 +41,13 @@ class TripController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Trip $trip)
+    public function show($id)
     {
-        //
+        $trip = Trip::with('days')->where('id', $id)->get();
+        return response([
+            'success' => true,
+            'trip' => $trip
+        ]);
     }
 
     /**
