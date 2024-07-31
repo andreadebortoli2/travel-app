@@ -58,7 +58,9 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - add foreign keys
 - create seeders
 - expose get api
-- show data on client side
+- show data on client side:
+    - show trips and days on home page
+    - show stops on day page
 - create form to generate trip
 - create form to generate day
 - create form to generate stop
