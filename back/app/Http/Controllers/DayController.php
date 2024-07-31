@@ -6,6 +6,8 @@ use App\Models\Day;
 use App\Http\Requests\StoreDayRequest;
 use App\Http\Requests\UpdateDayRequest;
 
+use App\Models\Stop;
+
 class DayController extends Controller
 {
     /**
@@ -37,10 +39,12 @@ class DayController extends Controller
      */
     public function show($id)
     {
-        $day = Day::with('stops')->where('id', $id)->get();
+        $day = Day::where('id', $id)->get();
+        $stops = Stop::where('day_id', $id)->orderBy('id', 'asc')->get();
         return response()->json([
             'success' => true,
-            'day' => $day
+            'day' => $day,
+            'stops' => $stops
         ]);
     }
 
