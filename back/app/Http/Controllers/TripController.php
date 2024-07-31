@@ -7,6 +7,9 @@ use App\Http\Requests\StoreTripRequest;
 use App\Http\Requests\UpdateTripRequest;
 use GrahamCampbell\ResultType\Success;
 
+use Illuminate\Support\Facades\DB;
+use App\Models\Day;
+
 class TripController extends Controller
 {
     /**
@@ -14,7 +17,7 @@ class TripController extends Controller
      */
     public function index()
     {
-        $trips = Trip::all();
+        $trips = DB::table('trips')->orderBy('start_date', 'desc')->get();
 
         return response()->json([
             'success' => true,
@@ -43,10 +46,12 @@ class TripController extends Controller
      */
     public function show($id)
     {
-        $trip = Trip::with('days')->where('id', $id)->get();
+        $trip = Trip::where('id', $id)->get();
+        $days = Day::where('trip_id', $id)->orderBy('date', 'asc')->get();
         return response([
             'success' => true,
-            'trip' => $trip
+            'trip' => $trip,
+            'days' => $days
         ]);
     }
 
