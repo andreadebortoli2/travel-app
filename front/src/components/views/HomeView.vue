@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios'
+import { RouterLink } from 'vue-router';
 
 export default {
     name: 'Homeview',
@@ -14,7 +15,7 @@ export default {
         getTrips() {
             axios.get('http://127.0.0.1:8000/api/trips').then(response => {
                 this.trips = response.data.trips
-                console.log(this.trips);
+                // console.log(this.trips);
             })
         },
         getSingleTrip(id) {
@@ -22,7 +23,7 @@ export default {
                 this.singleTrip = {}
                 this.singleTrip = response.data.trip[0]
                 this.singleTripDays = response.data.days
-                console.log(this.singleTrip, this.singleTripDays);
+                // console.log(this.singleTrip, this.singleTripDays);
             })
         }
     },
@@ -52,10 +53,14 @@ export default {
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-borderless table-info align-middle">
                         <tbody>
-                            <tr v-for="day in singleTripDays">
-                                <td class="w-25">{{ day.date }}</td>
-                                <td class="text-success"><strong>{{ day.description }}</strong></td>
-                            </tr>
+                            <template v-for="day in singleTripDays">
+                                <tr>
+                                    <RouterLink :to="{ name: 'day', params: { id: day.id, slug: day.slug } }">
+                                        <td class="w-25 p-2">{{ day.date }}</td>
+                                        <td class="text-success"><strong>{{ day.title }}</strong></td>
+                                    </RouterLink>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>

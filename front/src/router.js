@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 
 import HomeView from "./components/views/HomeView.vue"
+import DayView from "./components/views/DayView.vue"
 
 const router = createRouter({
     history: createWebHistory(),
@@ -9,6 +10,11 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: HomeView
+        },
+        {
+            path: '/day/:id/:slug',
+            name: 'day',
+            component: DayView
         }
     ]
 })

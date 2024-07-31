@@ -1,5 +1,5 @@
 <script>
-import { RouterView } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router';
 
 export default {
     name: 'App',
@@ -7,7 +7,14 @@ export default {
 </script>
 
 <template>
-    <header class="bg-info text-warning">header</header>
+    <header class="bg-info text-warning">
+        <div class="d-flex justify-content-between">
+            <h2>header</h2>
+            <RouterLink :to="{ name: 'home' }">
+                <h2>BACK</h2>
+            </RouterLink>
+        </div>
+    </header>
     <main>
         <RouterView />
     </main>
