@@ -81,7 +81,7 @@ export default {
                     this.errors = {}
                     // console.log(response.data.message);
                     this.getTrips()
-                    document.getElementById('close-update-trip-offcanvas').click()
+                    document.getElementById(`close-update-trip-offcanvas-${id}`).click()
                 }
             }).catch(error => {
                 console.log(error);
@@ -92,6 +92,22 @@ export default {
 
             this.loading = false
         },
+        deleteTrip(id) {
+            axios.post('http://127.0.0.1:8000/api/delete-trip/' + id).then(response => {
+                if (response.data.success) {
+                    this.errors = {}
+                    // console.log(response.data.message);
+                    this.singleTrip = {}
+                    this.getTrips()
+                    document.getElementById(`close-delete-trip-modal-${id}`).click()
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error) {
+                    this.errors = error.response.data.errors
+                }
+            })
+        }
     },
     mounted() {
         this.getTrips()
@@ -102,6 +118,7 @@ export default {
 <template>
     <section>
         <div class="row">
+            <!-- left col -->
             <div class="col m-1">
                 <div class="d-flex justify-content-between">
                     <h2>Your trips:</h2>
@@ -111,7 +128,7 @@ export default {
                         <h2>+</h2>
                     </button>
 
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="new-trip"
+                    <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="new-trip"
                         aria-labelledby="new-trip-offcanvas">
                         <div class="offcanvas-header">
                             <h5 class="offcanvas-title" id="new-trip-offcanvas">
@@ -158,19 +175,26 @@ export default {
                                 <td class="w-25">{{ trip.start_date }}</td>
                                 <td class="text-primary"><strong>{{ trip.title }}</strong></td>
                                 <td>
+                                    <!-- update trip offcanvas trigger button -->
                                     <button class="btn" type="button" data-bs-toggle="offcanvas"
                                         :data-bs-target="`#edit-trip-${trip.id}`"
                                         :aria-controls="`edit-trip-${trip.id}`" @click="setUpdateValues(trip)">
                                         U
                                     </button>
-                                    <!-- update trip offcanvas -->
-                                    <div class="offcanvas offcanvas-end" tabindex="-1" :id="`edit-trip-${trip.id}`"
+                                    <!-- delete  trip modal trigger button -->
+                                    <button type="button" class="btn" data-bs-toggle="modal"
+                                        :data-bs-target="`#delete-trip-${trip.id}`">
+                                        Del
+                                    </button>
+                                    <!-- update trip offcanvas body -->
+                                    <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-trip-${trip.id}`"
                                         :aria-labelledby="`edit-trip-${trip.id}-offcanvas`">
                                         <div class="offcanvas-header">
                                             <h5 class="offcanvas-title" :id="`edit-trip-${trip.id}-offcanvas`">
                                                 Edit trip: {{ trip.title }}
                                             </h5>
-                                            <button type="button" class="btn-close" id="close-update-trip-offcanvas"
+                                            <button type="button" class="btn-close"
+                                                :id="`close-update-trip-offcanvas-${trip.id}`"
                                                 data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                         </div>
 
@@ -203,29 +227,57 @@ export default {
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- delete trip modal body -->
+                                    <div class="modal fade" :id="`delete-trip-${trip.id}`" tabindex="-1" role="dialog"
+                                        :aria-labelledby="`delete-trip-${trip.id}-title`" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" :id="`delete-trip-${trip.id}-title`">
+                                                        Delete trip: <span class="text-danger">{{ trip.title }}</span>
+                                                    </h5>
+                                                    <button type="button" class="btn-close"
+                                                        :id="`close-delete-trip-modal-${trip.id}`"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">You're gonna delete it forever! <br> You'll also
+                                                    loose all its days and stops!!</div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-success"
+                                                        data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger"
+                                                        @click="deleteTrip(trip.id)">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <!-- delete trip modal -->
             </div>
             <!-- right col -->
             <div class="col m-1">
-                <h3>{{ singleTrip.title }}</h3>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover table-borderless table-info align-middle">
-                        <tbody>
-                            <template v-for="day in singleTripDays">
-                                <tr>
-                                    <RouterLink :to="{ name: 'day', params: { id: day.id, slug: day.slug } }">
-                                        <td class="w-25 p-2">{{ day.date }}</td>
-                                        <td class="text-success"><strong>{{ day.title }}</strong></td>
-                                    </RouterLink>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
+                <div v-if="singleTrip">
+                    <h3>{{ singleTrip.title }}</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-borderless table-info align-middle">
+                            <tbody>
+                                <template v-for="day in singleTripDays">
+                                    <tr>
+                                        <RouterLink :to="{ name: 'day', params: { id: day.id, slug: day.slug } }">
+                                            <td class="w-25 p-2">{{ day.date }}</td>
+                                            <td class="text-success"><strong>{{ day.title }}</strong></td>
+                                        </RouterLink>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

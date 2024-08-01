@@ -65,6 +65,8 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - set controller to create trip and expose post api ✅
 - create form to update trip ✅
 - set controller to update trip and expose post api ✅
+- create form to delete trip ✅
+- set controller to delete trip and expose post api ✅
 - create form to generate day
 - set controller to create day and expose post api
 - create form to generate stop
@@ -73,8 +75,6 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - set controller to update day and expose post api
 - create form to update stop (separate ratings?)
 - set controller to update stop and expose post api
-- create form to delete trip
-- set controller to delete trip and expose post api
 - create form to delete day
 - set controller to delete day and expose post api
 - create form to delete stop

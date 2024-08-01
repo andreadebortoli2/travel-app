@@ -9,6 +9,7 @@ use GrahamCampbell\ResultType\Success;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Day;
+use App\Models\Stop;
 
 class TripController extends Controller
 {
@@ -89,8 +90,22 @@ class TripController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Trip $trip)
+    public function destroy($id)
     {
-        //
+        $trip = Trip::where('id', $id);
+        $days = Day::where('trip_id', $id);
+        $getDays = Day::where('trip_id', $id)->get();
+        foreach ($getDays as $day) {
+            $stopToDelete = Stop::where('day_id', $day->id);
+            $stopToDelete->delete();
+        }
+
+        $days->delete();
+        $trip->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Trip $id deleted with its days and stops"
+        ]);
     }
 }
