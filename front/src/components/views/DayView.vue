@@ -1,6 +1,8 @@
 <script>
 import axios from 'axios';
 import Map from '../partials/Map.vue';
+import tt from "@tomtom-international/web-sdk-maps"
+import { stop } from 'vue';
 
 export default {
     name: 'DayView',
@@ -10,20 +12,41 @@ export default {
     data() {
         return {
             day: {},
-            stops: []
+            stops: [],
+            map: null
         }
     },
     methods: {
-        getSingleDay() {
-            axios.get('http://127.0.0.1:8000/api/day' + this.$route.params.id).then(response => {
+        async getSingleDay() {
+            await axios.get('http://127.0.0.1:8000/api/day' + this.$route.params.id).then(response => {
                 this.day = response.data.day[0]
                 this.stops = response.data.stops
                 // console.log(this.day, this.stops);
             })
+        },
+        addMap() {
+            const map = tt.map({
+                key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                container: "map",
+            })
+
+            return map
+        },
+        addMarkers(map) {
+            this.stops.forEach(stop => {
+                // console.log(stop.position_longitude, stop.position_latitude);
+                let position = [stop.position_longitude, stop.position_latitude]
+                let marker = new tt.Marker().setLngLat(position).addTo(map)
+                let popup = new tt.Popup().setText(stop.name)
+                marker.setPopup(popup)
+                console.log('hello');
+            })
         }
     },
-    mounted() {
-        this.getSingleDay()
+    async mounted() {
+        this.addMap()
+        await this.getSingleDay()
+        this.addMarkers(this.addMap())
     }
 }
 </script>
@@ -49,10 +72,17 @@ export default {
                 </template>
             </div>
             <div class="col">
-                <Map :stops="stops" />
+                <!-- <Map :day="day.id" /> -->
+                <div id='map'></div>
             </div>
         </div>
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+#map {
+    width: 100%;
+    height: 75vh;
+    margin: 1rem auto 0;
+}
+</style>
