@@ -73,9 +73,17 @@ class TripController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTripRequest $request, Trip $trip)
+    public function update(UpdateTripRequest $request, $id)
     {
-        //
+        $validated = $request->all();
+
+        $trip = Trip::where('id', $id);
+        $trip->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Trip $id updated"
+        ]);
     }
 
     /**

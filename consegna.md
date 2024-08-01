@@ -63,12 +63,12 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
     - show stops on day page ✅
 - create form to generate trip ✅
 - set controller to create trip and expose post api ✅
+- create form to update trip ✅
+- set controller to update trip and expose post api ✅
 - create form to generate day
 - set controller to create day and expose post api
 - create form to generate stop
 - set controller to create stop and expose post api
-- create form to update trip
-- set controller to update trip and expose post api
 - create form to update day
 - set controller to update day and expose post api
 - create form to update stop (separate ratings?)
