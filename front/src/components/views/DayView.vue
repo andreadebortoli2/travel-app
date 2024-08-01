@@ -1,8 +1,6 @@
 <script>
 import axios from 'axios';
-import Map from '../partials/Map.vue';
 import tt from "@tomtom-international/web-sdk-maps"
-import { stop } from 'vue';
 
 export default {
     name: 'DayView',
@@ -39,7 +37,6 @@ export default {
                 let marker = new tt.Marker().setLngLat(position).addTo(map)
                 let popup = new tt.Popup().setText(stop.name)
                 marker.setPopup(popup)
-                console.log('hello');
             })
         }
     },
@@ -72,7 +69,6 @@ export default {
                 </template>
             </div>
             <div class="col">
-                <!-- <Map :day="day.id" /> -->
                 <div id='map'></div>
             </div>
         </div>
