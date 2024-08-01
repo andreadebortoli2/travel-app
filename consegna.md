@@ -62,7 +62,7 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
     - show trips and days on home page ✅
     - show stops on day page ✅
 - create form to generate trip ✅
-- set controller to create trip and expose post api
+- set controller to create trip and expose post api ✅
 - create form to generate day
 - set controller to create day and expose post api
 - create form to generate stop
@@ -82,4 +82,4 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - refactore code (general)
 - style all pages
 - DEPLOYMENT
-- DOCUMENTATION 
+- DOCUMENTATION

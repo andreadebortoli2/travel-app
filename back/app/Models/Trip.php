@@ -11,6 +11,8 @@ class trip extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title', 'start_date'];
+
     public function days(): HasMany
     {
         return $this->hasMany(Day::class);

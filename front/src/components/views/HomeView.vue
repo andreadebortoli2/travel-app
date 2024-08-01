@@ -11,7 +11,8 @@ export default {
             singleTripDays: {},
             newTripTitle: '',
             newTripStartDate: '',
-            errors: {}
+            errors: {},
+            loading: false,
         }
     },
     methods: {
@@ -35,15 +36,27 @@ export default {
                 start_date: this.newTripStartDate
             }
             // console.log(data);
-            axios.post(url, data).then(response => {
+
+            this.loading = true
+
+            axios.post('http://127.0.0.1:8000/api/new-trip', data).then(response => {
                 if (response.data.success) {
                     this.newTripTitle = ''
                     this.newTripStartDate = ''
-                } else {
-                    console.log(response.data.errors);
-                    this.errors = response.data.errors
+                    this.errors = {}
+                    // console.log(response.data.message);
+                    this.getTrips()
+                    document.getElementById('close-button').click()
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error) {
+                    this.errors = error.response.data.errors
                 }
             })
+
+            this.loading = false
+
         }
     },
     mounted() {
@@ -70,28 +83,35 @@ export default {
                             <h5 class="offcanvas-title" id="new-trip-offcanvas">
                                 New trip
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                            <button type="button" class="btn-close" id="close-button" data-bs-dismiss="offcanvas"
                                 aria-label="Close"></button>
                         </div>
+
                         <div class="offcanvas-body">
                             <form @submit.prevent="createNewTrip()">
 
-                                <div class="my-3">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="John Doe"
+                                <div class="mm-3">
+                                    <label for="name" class="form-label">Title / destination :</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Rome"
                                         v-model="newTripTitle" />
                                 </div>
 
                                 <div class="my-3">
-                                    <label for="start-date">Start date</label>
+                                    <label for="start-date" class="form-label">Start date :</label>
                                     <input type="date" class="form-control" name="start-date" id="start-date"
                                         v-model="newTripStartDate">
                                 </div>
 
                                 <div class="my-3">
-                                    <button class="form-control" type="submit">create</button>
+                                    <button class="form-control" type="submit" :disabled="loading">
+                                        {{ loading ? 'Creating...' : 'Create a new trip' }}
+                                    </button>
                                 </div>
                             </form>
+
+                            <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                                <div v-for="error in errors">{{ error[0] }}</div>
+                            </div>
                         </div>
                     </div>
 

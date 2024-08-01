@@ -38,7 +38,14 @@ class TripController extends Controller
      */
     public function store(StoreTripRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        Trip::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'new trip created'
+        ]);
     }
 
     /**

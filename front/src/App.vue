@@ -8,7 +8,7 @@ export default {
 
 <template>
     <header class="bg-info text-warning">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between px-4">
             <h2>header</h2>
             <RouterLink :to="{ name: 'home' }">
                 <h2>BACK</h2>

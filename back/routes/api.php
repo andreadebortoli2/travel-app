@@ -20,7 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// get APIs
 Route::get('trips', [TripController::class, 'index']);
 Route::get('trips/{trip_id}', [TripController::class, 'show']);
 
 Route::get('day{day:id}', [DayController::class, 'show']);
+
+// post APIs
+Route::post('new-trip', [TripController::class, 'store']);
