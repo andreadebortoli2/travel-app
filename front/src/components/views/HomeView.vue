@@ -8,7 +8,10 @@ export default {
         return {
             trips: [],
             singleTrip: {},
-            singleTripDays: {}
+            singleTripDays: {},
+            newTripTitle: '',
+            newTripStartDate: '',
+            errors: {}
         }
     },
     methods: {
@@ -25,6 +28,22 @@ export default {
                 this.singleTripDays = response.data.days
                 // console.log(this.singleTrip, this.singleTripDays);
             })
+        },
+        createNewTrip() {
+            const data = {
+                title: this.newTripTitle,
+                start_date: this.newTripStartDate
+            }
+            // console.log(data);
+            axios.post(url, data).then(response => {
+                if (response.data.success) {
+                    this.newTripTitle = ''
+                    this.newTripStartDate = ''
+                } else {
+                    console.log(response.data.errors);
+                    this.errors = response.data.errors
+                }
+            })
         }
     },
     mounted() {
@@ -37,6 +56,46 @@ export default {
     <section>
         <div class="row">
             <div class="col m-1">
+                <div class="d-flex justify-content-between">
+                    <h2>Your trips:</h2>
+                    <!-- new trip offcanvas -->
+                    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#new-trip"
+                        aria-controls="new-trip">
+                        <h2>+</h2>
+                    </button>
+
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="new-trip"
+                        aria-labelledby="new-trip-offcanvas">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="new-trip-offcanvas">
+                                New trip
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <form @submit.prevent="createNewTrip()">
+
+                                <div class="my-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="John Doe"
+                                        v-model="newTripTitle" />
+                                </div>
+
+                                <div class="my-3">
+                                    <label for="start-date">Start date</label>
+                                    <input type="date" class="form-control" name="start-date" id="start-date"
+                                        v-model="newTripStartDate">
+                                </div>
+
+                                <div class="my-3">
+                                    <button class="form-control" type="submit">create</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-borderless table-success align-middle">
                         <tbody>
