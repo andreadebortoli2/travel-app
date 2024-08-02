@@ -30,3 +30,5 @@ Route::get('day{day:id}', [DayController::class, 'show']);
 Route::post('new-trip', [TripController::class, 'store']);
 Route::post('update-trip/{trip_id}', [TripController::class, 'update']);
 Route::post('delete-trip/{trip_id}', [TripController::class, 'destroy']);
+
+Route::post('new-day', [DayController::class, 'store']);

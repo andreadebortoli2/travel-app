@@ -12,7 +12,7 @@ const router = createRouter({
             component: HomeView
         },
         {
-            path: '/day/:id/:slug',
+            path: '/day/:id/:date',
             name: 'day',
             component: DayView
         }

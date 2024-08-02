@@ -31,7 +31,18 @@ class DayController extends Controller
      */
     public function store(StoreDayRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $day = Day::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Day $day->id created",
+            'route' => [
+                'day_id' => $day->id,
+                'day_date' => $day->date
+            ]
+        ]);
     }
 
     /**

@@ -14,7 +14,10 @@ export default {
             errors: {},
             loading: false,
             updateTripTitle: '',
-            updateTripStartDate: ''
+            updateTripStartDate: '',
+            newDayTitle: '',
+            newDayDate: '',
+            newDayDescription: '',
         }
     },
     methods: {
@@ -107,7 +110,39 @@ export default {
                     this.errors = error.response.data.errors
                 }
             })
-        }
+        },
+        createNewDay() {
+            const data = {
+                trip_id: this.singleTrip.id,
+                title: this.newDayTitle,
+                date: this.newDayDate,
+                description: this.newDayDescription
+            }
+            // console.log(data);
+
+            this.loading = true
+
+            axios.post('http://127.0.0.1:8000/api/new-day', data).then(response => {
+                if (response.data.success) {
+                    this.newDayTitle = ''
+                    this.newDayDate = ''
+                    this.newDayDescription = ''
+                    this.errors = {}
+                    // console.log(response.data.message);
+
+                    let dayId = response.data.route.day_id
+                    let dayDate = response.data.route.day_date
+                    this.$router.push({ name: 'day', params: { id: dayId, date: dayDate } })
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error) {
+                    this.errors = error.response.data.errors
+                }
+            })
+
+            this.loading = false
+        },
     },
     mounted() {
         this.getTrips()
@@ -142,20 +177,20 @@ export default {
                             <form @submit.prevent="createNewTrip()">
 
                                 <div class="mm-3">
-                                    <label for="name" class="form-label">Title / destination :</label>
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="Rome"
-                                        v-model="newTripTitle" required />
+                                    <label for="new-trip-title" class="form-label">Title / destination* :</label>
+                                    <input type="text" class="form-control" name="new-trip-title" id="new-trip-title"
+                                        placeholder="Rome" v-model="newTripTitle" required />
                                 </div>
 
                                 <div class="my-3">
-                                    <label for="start-date" class="form-label">Start date :</label>
-                                    <input type="date" class="form-control" name="start-date" id="start-date"
-                                        v-model="newTripStartDate" required>
+                                    <label for="new-trip-start-date" class="form-label">Start date* :</label>
+                                    <input type="date" class="form-control" name="new-trip-start-date"
+                                        id="new-trip-start-date" v-model="newTripStartDate" required>
                                 </div>
 
                                 <div class="my-3">
                                     <button class="form-control" type="submit" :disabled="loading">
-                                        {{ loading ? 'Creating...' : 'Create a new trip' }}
+                                        {{ loading ? 'Creating...' : 'Add a new trip' }}
                                     </button>
                                 </div>
                             </form>
@@ -202,16 +237,18 @@ export default {
                                             <form @submit.prevent="editTrip(trip.id)">
 
                                                 <div class="mm-3">
-                                                    <label for="name" class="form-label">Title / destination :</label>
-                                                    <input type="text" class="form-control" name="name" id="name"
-                                                        v-model="updateTripTitle" required />
+                                                    <label for="edit-trip-title" class="form-label">Title / destination
+                                                        :</label>
+                                                    <input type="text" class="form-control" name="edit-trip-title"
+                                                        id="edit-trip-title" v-model="updateTripTitle" required />
                                                 </div>
 
                                                 <div class="my-3">
-                                                    <label for="start-date" class="form-label">Start date :</label>
+                                                    <label for="edit-trip-start-date" class="form-label">Start date
+                                                        :</label>
                                                     <input type="text" onfocus="(this.type='date')" class="form-control"
-                                                        name="start-date" id="start-date" v-model="updateTripStartDate"
-                                                        required>
+                                                        name="edit-trip-start-date" id="edit-trip-start-date"
+                                                        v-model="updateTripStartDate" required>
                                                 </div>
 
                                                 <div class="my-3">
@@ -263,15 +300,72 @@ export default {
             <!-- right col -->
             <div class="col m-1">
                 <div v-if="singleTrip">
-                    <h3>{{ singleTrip.title }}</h3>
+                    <div class="d-flex justify-content-between">
+                        <h3>{{ singleTrip.title }}</h3>
+                        <!-- new day offcanvas -->
+                        <div v-if="singleTrip.id">
+                            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#new-day"
+                                aria-controls="new-day">
+                                <h2>+</h2>
+                            </button>
+
+                            <div class="offcanvas offcanvas-start w-50" tabindex="-1" id="new-day"
+                                aria-labelledby="new-day-offcanvas">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="new-day-offcanvas">
+                                        New day
+                                    </h5>
+                                    <button type="button" class="btn-close" id="close-new-day-offcanvas"
+                                        data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+
+
+                                <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                                    <div v-for="error in errors">{{ error[0] }}</div>
+                                </div>
+
+                                <div class="offcanvas-body">
+                                    <form @submit.prevent="createNewDay()">
+
+                                        <div class="mm-3">
+                                            <label for="new-day-title" class="form-label">Title / destination :</label>
+                                            <input type="text" class="form-control" name="new-day-title"
+                                                id="new-day-title" placeholder="Rome" v-model="newDayTitle" />
+                                        </div>
+
+                                        <div class="my-3">
+                                            <label for="new-day-date" class="form-label">Date* :</label>
+                                            <input type="date" class="form-control" name="new-day-date"
+                                                id="new-day-date" v-model="newDayDate" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="new-day-description" class="form-label">Description :</label>
+                                            <textarea class="form-control" name="new-day-description"
+                                                id="new-day-description" rows="3"
+                                                v-model="newDayDescription"></textarea>
+                                        </div>
+
+
+                                        <div class="my-3">
+                                            <button class="form-control" type="submit" :disabled="loading">
+                                                {{ loading ? 'Creating...' : 'Add a new day' }}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-borderless table-info align-middle">
                             <tbody>
                                 <template v-for="day in singleTripDays">
                                     <tr>
-                                        <RouterLink :to="{ name: 'day', params: { id: day.id, slug: day.slug } }">
+                                        <RouterLink :to="{ name: 'day', params: { id: day.id, date: day.date } }">
                                             <td class="w-25 p-2">{{ day.date }}</td>
-                                            <td class="text-success"><strong>{{ day.title }}</strong></td>
+                                            <td class="text-success" v-if="day.title"><strong>{{ day.title }}</strong>
+                                            </td>
                                         </RouterLink>
                                     </tr>
                                 </template>
