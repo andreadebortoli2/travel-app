@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\DayController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\DayController;
+use App\Http\Controllers\StopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,3 +33,9 @@ Route::post('update-trip/{trip_id}', [TripController::class, 'update']);
 Route::post('delete-trip/{trip_id}', [TripController::class, 'destroy']);
 
 Route::post('new-day', [DayController::class, 'store']);
+Route::post('update-day/{day_id}', [DayController::class, 'update']);
+Route::post('delete-day/{day_id}', [DayController::class, 'destroy']);
+
+Route::post('new-stop', [StopController::class, 'store']);
+Route::post('update-stop/{stop_id}', [StopController::class, 'update']);
+Route::post('delete-stop/{stop_id}', [StopController::class, 'destroy']);

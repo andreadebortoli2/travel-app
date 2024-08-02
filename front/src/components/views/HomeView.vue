@@ -237,14 +237,14 @@ export default {
                                             <form @submit.prevent="editTrip(trip.id)">
 
                                                 <div class="mm-3">
-                                                    <label for="edit-trip-title" class="form-label">Title / destination
+                                                    <label for="edit-trip-title" class="form-label">Title / destination*
                                                         :</label>
                                                     <input type="text" class="form-control" name="edit-trip-title"
                                                         id="edit-trip-title" v-model="updateTripTitle" required />
                                                 </div>
 
                                                 <div class="my-3">
-                                                    <label for="edit-trip-start-date" class="form-label">Start date
+                                                    <label for="edit-trip-start-date" class="form-label">Start date*
                                                         :</label>
                                                     <input type="text" onfocus="(this.type='date')" class="form-control"
                                                         name="edit-trip-start-date" id="edit-trip-start-date"

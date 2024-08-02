@@ -70,16 +70,33 @@ class DayController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDayRequest $request, Day $day)
+    public function update(UpdateDayRequest $request, $id)
     {
-        //
+        $validated = $request->all();
+
+        $day = Day::where('id', $id);
+        $day->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Day $id updated"
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Day $day)
+    public function destroy($id)
     {
-        //
+        $day = Day::where('id', $id);
+        $stops = Stop::where('day_id', $id);
+
+        $stops->delete();
+        $day->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Trip $id deleted with its days and stops"
+        ]);
     }
 }

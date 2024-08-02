@@ -11,7 +11,7 @@ class UpdateDayRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateDayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'date' => 'required|date',
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
+            'trip_id' => 'required|exists:trips,id'
         ];
     }
 }
