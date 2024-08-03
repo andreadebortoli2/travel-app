@@ -11,7 +11,7 @@ class StoreStopRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class StoreStopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'position_longitude' => 'required|string|max:255',
+            'position_latitude' => 'required|string|max:255',
+            'image' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
+            'rating' => 'nullable|numeric',
+            'day_id' => 'required|exists:days,id'
         ];
     }
 }

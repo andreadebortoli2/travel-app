@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps"
+import { RouterLink } from 'vue-router';
 
 export default {
     name: 'DayView',
@@ -119,6 +120,7 @@ export default {
     <section>
         <div class="row">
             <div class="col">
+                <!-- left col -->
                 <div class="d-flex justify-content-between">
                     <h2 class="w-50">
                         {{ day.date }}
@@ -212,14 +214,16 @@ export default {
                 <p>
                     {{ day.description }}
                 </p>
+                <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">Add a stop</RouterLink>
                 <template v-if="stops">
                     <template v-for="stop in stops">
-                        <h5>{{ stop.name }} - <span>{{ stop.rating }}/5</span></h5>
+                        <h5>{{ stop.name }} <span v-if="stop.rating"> - {{ stop.rating }}/5</span></h5>
                         <p>{{ stop.notes }}</p>
                     </template>
                 </template>
             </div>
             <div class="col">
+                <!-- right col -->
                 <div id='map'></div>
             </div>
         </div>

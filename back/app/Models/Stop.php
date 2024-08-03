@@ -11,6 +11,8 @@ class stop extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'position_longitude', 'position_latitude', 'image', 'notes', 'rating', 'day_id'];
+
     public function day(): BelongsTo
     {
         return $this->belongsTo(Day::class);

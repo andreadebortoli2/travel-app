@@ -29,7 +29,14 @@ class StopController extends Controller
      */
     public function store(StoreStopRequest $request)
     {
-        //
+        $validated = $request->all();
+
+        Stop::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Stop created"
+        ]);
     }
 
     /**

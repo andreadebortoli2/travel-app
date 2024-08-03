@@ -1,1 +1,2 @@
-@import "@tomtom-international/web-sdk-maps"
+@import "@tomtom-international/web-sdk-maps";
+@import "@tomtom-international/web-sdk-plugin-searchbox";
