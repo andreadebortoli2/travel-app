@@ -3,7 +3,6 @@ import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps";
 import { services } from '@tomtom-international/web-sdk-services';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
-import { RouterLink } from 'vue-router';
 
 export default {
     name: 'AddStopView',
@@ -52,7 +51,6 @@ export default {
             })
 
             this.loading = false
-
         },
         // map
         addMap() {
@@ -70,6 +68,7 @@ export default {
                 autocompleteOptions: {
                     key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
                     language: "en-GB",
+                    resultSet: "category"
                 },
             }
             var ttSearchBox = new SearchBox(services, options)
@@ -154,7 +153,6 @@ export default {
                 <div id='map'></div>
             </div>
         </div>
-
     </section>
 </template>
 

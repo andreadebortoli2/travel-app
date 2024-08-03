@@ -42,9 +42,14 @@ class StopController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Stop $stop)
+    public function show($id)
     {
-        //
+        $stop = Stop::where('id', $id)->get();
+
+        return response([
+            'success' => true,
+            'stop' => $stop
+        ]);
     }
 
     /**
@@ -58,9 +63,17 @@ class StopController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStopRequest $request, Stop $stop)
+    public function update(UpdateStopRequest $request, $id)
     {
-        //
+        $validated = $request->all();
+
+        $stop = Stop::where('id', $id);
+        $stop->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Stop $id updated"
+        ]);
     }
 
     /**

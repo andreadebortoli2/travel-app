@@ -17,7 +17,6 @@ export default {
             errors: {},
             loading: false,
             stops: [],
-            map: null
         }
     },
     methods: {
@@ -237,6 +236,8 @@ export default {
                     <template v-for="stop in stops">
                         <h5>{{ stop.name }} <span v-if="stop.rating"> - {{ stop.rating }}/5</span></h5>
                         <p>{{ stop.notes }}</p>
+                        <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">U
+                        </RouterLink>
                         <!-- delete stop modal trigger button -->
                         <button type="button" class="btn" data-bs-toggle="modal"
                             :data-bs-target="`#delete-stop-${stop.id}`">

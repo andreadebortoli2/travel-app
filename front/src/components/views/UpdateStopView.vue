@@ -1,0 +1,192 @@
+<script>
+import axios from 'axios';
+import tt from "@tomtom-international/web-sdk-maps";
+import { services } from '@tomtom-international/web-sdk-services';
+import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
+import { RouterLink } from 'vue-router';
+
+export default {
+    name: 'UpdateStopView',
+    data() {
+        return {
+            stop: '',
+            updateStopName: '',
+            updateStopNotes: '',
+            updateStopRating: '',
+            updateStopLongitude: '',
+            updateStopLatitude: '',
+            updateDayId: '',
+            updateStopImage: '',
+            loading: false,
+            errors: {}
+        }
+    },
+    methods: {
+        async getCurrentStop(id) {
+            await axios.get('http://127.0.0.1:8000/api/stop' + id).then(response => {
+                // console.log(response.data.stop[0]);
+                this.stop = ''
+                this.updateDayId = ''
+                this.updateStopName = ''
+                this.updateStopLongitude = ''
+                this.updateStopLatitude = ''
+                this.updateStopImage = ''
+                this.updateStopNotes = ''
+                this.updateStopRating = ''
+                this.stop = response.data.stop[0]
+                this.updateDayId = this.stop.day_id
+                this.updateStopName = this.stop.name
+                this.updateStopLongitude = this.stop.position_longitude
+                this.updateStopLatitude = this.stop.position_latitude
+                this.updateStopImage = this.stop.image
+                this.updateStopNotes = this.stop.notes
+                this.updateStopRating = this.stop.rating
+            })
+
+        },
+        addMap() {
+            const map = tt.map({
+                key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                container: "map",
+            })
+
+            let position = [this.updateStopLongitude, this.updateStopLatitude]
+            let marker = new tt.Marker().setLngLat(position).addTo(map)
+            let popup = new tt.Popup().setText(this.updateStopName)
+            marker.setPopup(popup)
+            map.setCenter(marker.getLngLat()).setZoom(4)
+
+            var options = {
+                searchOptions: {
+                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    language: "en-GB",
+                    limit: 5,
+                },
+                autocompleteOptions: {
+                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    language: "en-GB",
+                    resultSet: "category"
+                },
+            }
+            var ttSearchBox = new SearchBox(services, options)
+            map.addControl(ttSearchBox, "top-left")
+            ttSearchBox.updateOptions({
+                minNumberOfCharacters: 3,
+                labels: {
+                    placeholder: "Where are you going*?",
+                },
+            })
+
+            ttSearchBox.on("tomtom.searchbox.resultselected", this.handleResultSelection)
+            ttSearchBox.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
+
+            return map
+        },
+        handleResultSelection(e) {
+            // console.log("selected", e);
+
+            let map = this.addMap()
+            let result = e.data.result
+
+            let position = [result.position.lng, result.position.lat]
+            let marker = new tt.Marker().setLngLat(position).addTo(map)
+            let popup = new tt.Popup().setText(result.address.freeformAddress)
+            marker.setPopup(popup)
+            map.setCenter(marker.getLngLat()).setZoom(4)
+
+            this.updateStopLongitude = result.position.lng
+            this.updateStopLatitude = result.position.lat
+
+            if (result.type === 'POI') {
+                this.updateStopName = result.poi.name
+            } else {
+                this.updateStopName = result.address.freeformAddress
+            }
+        },
+        updateStop() {
+            const data = {
+                day_id: this.updateDayId,
+                name: this.updateStopName,
+                position_longitude: this.updateStopLongitude.toString(),
+                position_latitude: this.updateStopLatitude.toString(),
+                image: this.updateStopImage,
+                notes: this.updateStopNotes,
+                rating: this.updateStopRating,
+            }
+            // console.log(data);
+            this.loading = true
+
+            axios.post('http://127.0.0.1:8000/api/update-stop/' + this.$route.params.id, data).then(response => {
+                if (response.data.success) {
+                    this.errors = {}
+                    console.log(response.data.message);
+                    this.$router.push({ name: 'day', params: { id: this.stop.day_id, date: this.$route.params.date } })
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error) {
+                    this.errors = error.response.data.errors
+                }
+            })
+
+            this.loading = false
+        }
+    },
+    async mounted() {
+        await this.getCurrentStop(this.$route.params.id)
+        this.addMap()
+    }
+}
+</script>
+
+<template>
+    <section>
+        <div class="row">
+            <div class="col m-2">
+                <!-- left col -->
+                <form @submit.prevent="updateStop()">
+                    <div class="mm-3">
+                        <label for="update-stop-title" class="form-label">Name / Location :</label>
+                        <input type="text" class="form-control" name="update-stop-title" id="update-stop-title"
+                            placeholder="Rome" v-model="updateStopName" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="update-stop-description" class="form-label">Notes :</label>
+                        <textarea class="form-control" name="update-stop-description" id="update-stop-description"
+                            rows="3" v-model="updateStopNotes"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="update-stop-rating" class="form-label">Stop rating :</label>
+                        <input type="range" class="form-range" min="0" max="5" id="update-stop-rating"
+                            v-model="updateStopRating">
+                    </div>
+
+                    <div class="my-3">
+                        <button class="form-control" type="submit" :disabled="loading">
+                            {{ loading ? 'Updating...' : 'Update stop' }}
+                        </button>
+                    </div>
+                </form>
+
+                <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                    <div v-for="error in errors">{{ error[0] }}</div>
+                </div>
+            </div>
+            <div class="col">
+                <!-- right col -->
+                <div id='map'></div>
+            </div>
+        </div>
+
+    </section>
+</template>
+
+<style scoped>
+#map {
+    width: 100%;
+    height: 75vh;
+    margin: 1rem auto 0;
+}
+</style>

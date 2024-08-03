@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "./components/views/HomeView.vue"
 import DayView from "./components/views/DayView.vue"
 import AddStopView from "./components/views/AddStopView.vue"
+import UpdateStopView from "./components/views/UpdateStopView.vue"
 
 const router = createRouter({
     history: createWebHistory(),
@@ -21,6 +22,11 @@ const router = createRouter({
             path: '/add-stop-to/:id/:date',
             name: 'add-stop',
             component: AddStopView
+        },
+        {
+            path: '/update-stop-to/:id/:date',
+            name: 'update-stop',
+            component: UpdateStopView
         },
     ]
 })

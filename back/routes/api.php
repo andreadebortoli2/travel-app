@@ -27,6 +27,8 @@ Route::get('trips/{trip_id}', [TripController::class, 'show']);
 
 Route::get('day{day:id}', [DayController::class, 'show']);
 
+Route::get('stop{stop:id}', [StopController::class, 'show']);
+
 // post APIs
 Route::post('new-trip', [TripController::class, 'store']);
 Route::post('update-trip/{trip_id}', [TripController::class, 'update']);
