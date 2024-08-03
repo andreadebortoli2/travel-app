@@ -66,8 +66,15 @@ class StopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stop $stop)
+    public function destroy($id)
     {
-        //
+        $stop = Stop::where('id', $id);
+
+        $stop->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Stop $id deleted"
+        ]);
     }
 }
