@@ -3,11 +3,13 @@ import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps";
 import { services } from '@tomtom-international/web-sdk-services';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
+import { store } from '../../store';
 
 export default {
     name: 'AddStopView',
     data() {
         return {
+            store,
             newStopName: '',
             newStopNotes: '',
             newStopRating: '',
@@ -32,7 +34,7 @@ export default {
 
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/new-stop', data).then(response => {
+            axios.post(store.baseApiUrl + 'new-stop', data).then(response => {
                 if (response.data.success) {
                     this.newStopName = ''
                     this.newStopPositionLongitude = ''
@@ -55,20 +57,20 @@ export default {
         // map
         addMap() {
             const map = tt.map({
-                key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                key: store.mapKey,
                 container: "map",
             })
 
             var options = {
                 searchOptions: {
-                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    key: store.mapKey,
                     language: "en-GB",
                     limit: 5,
                 },
                 autocompleteOptions: {
-                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    key: store.mapKey,
                     language: "en-GB",
-                    resultSet: "category"
+                    resultSet: "poi"
                 },
             }
             var ttSearchBox = new SearchBox(services, options)
@@ -91,20 +93,22 @@ export default {
             let map = this.addMap()
             let result = e.data.result
 
-            let position = [result.position.lng, result.position.lat]
-            let marker = new tt.Marker().setLngLat(position).addTo(map)
-            let popup = new tt.Popup().setText(result.address.freeformAddress)
-            marker.setPopup(popup)
-            map.setCenter(marker.getLngLat()).setZoom(4)
-
-            this.newStopPositionLongitude = result.position.lng
-            this.newStopPositionLatitude = result.position.lat
-
             if (result.type === 'POI') {
                 this.newStopName = result.poi.name
             } else {
                 this.newStopName = result.address.freeformAddress
             }
+
+            let position = [result.position.lng, result.position.lat]
+            let marker = new tt.Marker().setLngLat(position).addTo(map)
+            let popup = new tt.Popup().setText(this.newStopName)
+            marker.setPopup(popup)
+            map.setZoom(8)
+            map.setCenter(position)
+
+            this.newStopPositionLongitude = result.position.lng
+            this.newStopPositionLatitude = result.position.lat
+
         },
     },
     mounted() {

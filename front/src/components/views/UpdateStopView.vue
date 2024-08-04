@@ -3,12 +3,13 @@ import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps";
 import { services } from '@tomtom-international/web-sdk-services';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
-import { RouterLink } from 'vue-router';
+import { store } from '../../store';
 
 export default {
     name: 'UpdateStopView',
     data() {
         return {
+            store,
             stop: '',
             updateStopName: '',
             updateStopNotes: '',
@@ -23,7 +24,7 @@ export default {
     },
     methods: {
         async getCurrentStop(id) {
-            await axios.get('http://127.0.0.1:8000/api/stop' + id).then(response => {
+            await axios.get(store.baseApiUrl + 'stop' + id).then(response => {
                 // console.log(response.data.stop[0]);
                 this.stop = ''
                 this.updateDayId = ''
@@ -46,7 +47,7 @@ export default {
         },
         addMap() {
             const map = tt.map({
-                key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                key: store.mapKey,
                 container: "map",
             })
 
@@ -54,18 +55,19 @@ export default {
             let marker = new tt.Marker().setLngLat(position).addTo(map)
             let popup = new tt.Popup().setText(this.updateStopName)
             marker.setPopup(popup)
-            map.setCenter(marker.getLngLat()).setZoom(4)
+            map.setZoom(8)
+            map.setCenter(position)
 
             var options = {
                 searchOptions: {
-                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    key: store.mapKey,
                     language: "en-GB",
                     limit: 5,
                 },
                 autocompleteOptions: {
-                    key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                    key: store.mapKey,
                     language: "en-GB",
-                    resultSet: "category"
+                    resultSet: "poi"
                 },
             }
             var ttSearchBox = new SearchBox(services, options)
@@ -92,7 +94,8 @@ export default {
             let marker = new tt.Marker().setLngLat(position).addTo(map)
             let popup = new tt.Popup().setText(result.address.freeformAddress)
             marker.setPopup(popup)
-            map.setCenter(marker.getLngLat()).setZoom(4)
+            map.setZoom(8)
+            map.setCenter(position)
 
             this.updateStopLongitude = result.position.lng
             this.updateStopLatitude = result.position.lat
@@ -116,7 +119,7 @@ export default {
             // console.log(data);
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/update-stop/' + this.$route.params.id, data).then(response => {
+            axios.post(store.baseApiUrl + 'update-stop/' + this.$route.params.id, data).then(response => {
                 if (response.data.success) {
                     this.errors = {}
                     console.log(response.data.message);
