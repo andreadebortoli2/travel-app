@@ -1,11 +1,13 @@
 <script>
 import axios from 'axios'
 import { RouterLink } from 'vue-router';
+import { store } from '../../store';
 
 export default {
     name: 'Homeview',
     data() {
         return {
+            store,
             trips: [],
             singleTrip: {},
             singleTripDays: {},
@@ -22,13 +24,13 @@ export default {
     },
     methods: {
         getTrips() {
-            axios.get('http://127.0.0.1:8000/api/trips').then(response => {
+            axios.get(store.baseApiUrl + 'trips').then(response => {
                 this.trips = response.data.trips
                 // console.log(this.trips);
             })
         },
         getSingleTrip(id) {
-            axios.get('http://127.0.0.1:8000/api/trips/' + id).then(response => {
+            axios.get(store.baseApiUrl + 'trips/' + id).then(response => {
                 this.singleTrip = {}
                 this.singleTrip = response.data.trip[0]
                 this.singleTripDays = response.data.days
@@ -44,7 +46,7 @@ export default {
 
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/new-trip', data).then(response => {
+            axios.post(store.baseApiUrl + 'new-trip', data).then(response => {
                 if (response.data.success) {
                     this.newTripTitle = ''
                     this.newTripStartDate = ''
@@ -77,7 +79,7 @@ export default {
 
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/update-trip/' + id, data).then(response => {
+            axios.post(store.baseApiUrl + 'update-trip/' + id, data).then(response => {
                 if (response.data.success) {
                     this.updateTripTitle = ''
                     this.updateTripStartDate = ''
@@ -96,7 +98,7 @@ export default {
             this.loading = false
         },
         deleteTrip(id) {
-            axios.post('http://127.0.0.1:8000/api/delete-trip/' + id).then(response => {
+            axios.post(store.baseApiUrl + 'delete-trip/' + id).then(response => {
                 if (response.data.success) {
                     this.errors = {}
                     // console.log(response.data.message);
@@ -122,7 +124,7 @@ export default {
 
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/new-day', data).then(response => {
+            axios.post(store.baseApiUrl + 'new-day', data).then(response => {
                 if (response.data.success) {
                     this.newDayTitle = ''
                     this.newDayDate = ''
