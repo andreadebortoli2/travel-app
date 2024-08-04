@@ -58,7 +58,7 @@ export default {
 <template>
     <button class="btn" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-trip-${trip.id}`"
         :aria-controls="`edit-trip-${trip.id}`" @click="setUpdateValues(trip)">
-        U
+        <div v-html="store.editIcon"></div>
     </button>
 
     <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-trip-${trip.id}`"

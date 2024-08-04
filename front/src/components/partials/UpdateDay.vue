@@ -64,7 +64,7 @@ export default {
 <template>
     <button class="btn" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-day-${day.id}`"
         :aria-controls="`edit-day-${day.id}`" @click="setUpdateValues(day)">
-        U
+        <div v-html="store.editIcon"></div>
     </button>
 
     <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-day-${day.id}`"

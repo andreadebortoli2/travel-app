@@ -57,7 +57,9 @@ export default {
 <template>
     <div v-if="singleTrip.id">
         <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#new-day" aria-controls="new-day">
-            <h2>+</h2>
+            <h2>
+                <div v-html="store.addIcon"></div>
+            </h2>
         </button>
 
         <div class="offcanvas offcanvas-start w-50" tabindex="-1" id="new-day" aria-labelledby="new-day-offcanvas">

@@ -79,10 +79,10 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - set controller to update stop and expose post api ✅
 - create form to delete stop ✅
 - set controller to delete stop and expose post api ✅
-- code refactoring  (general)
+- code refactoring  (general) ✅
 - style all pages
-    - stop details accordion
-    - icons
+    - stop details as accordion
+    - icons ✅
     - texts
 - DEPLOYMENT
 - DOCUMENTATION

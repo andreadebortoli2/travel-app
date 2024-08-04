@@ -37,7 +37,7 @@ export default {
             return map
         },
         addMarkers(map) {
-            if (this.stops.length !== 0) {
+            if (this.stops.length > 0) {
 
                 let longitudes = []
                 let latitudes = []
@@ -57,10 +57,15 @@ export default {
 
                 var llb = new tt.LngLatBounds(sw, ne)
 
-                map.setZoom(-2)
-                map.fitBounds(llb, {
-                    padding: { top: 25, bottom: 25, left: 25, right: 25 }
-                })
+                if (this.stops.length === 1) {
+                    map.setZoom(8)
+                    map.setCenter(ne)
+                } else {
+                    map.setZoom(0)
+                    map.fitBounds(llb, {
+                        padding: { top: 40, bottom: 10, left: 25, right: 25 }
+                    })
+                }
             }
         }
     },
@@ -94,15 +99,22 @@ export default {
                 <p>
                     {{ day.description }}
                 </p>
-                <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">Add a stop</RouterLink>
+                <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">
+                    <h2 v-html="store.addIcon"></h2>
+                </RouterLink>
                 <template v-if="stops">
                     <template v-for="stop in stops">
-                        <h5>{{ stop.name }} <span v-if="stop.rating"> - {{ stop.rating }}/5</span></h5>
+                        <h5><i class="fa-solid fa-location-dot"></i> {{ stop.name }} </h5>
+                        <div v-if="stop.rating"> - {{ stop.rating }}/5</div>
                         <p>{{ stop.notes }}</p>
-                        <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">U
-                        </RouterLink>
+                        <button class="btn">
+                            <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
+                                <div v-html="store.editIcon"></div>
+                            </RouterLink>
+                        </button>
                         <!-- delete stop modal -->
                         <DeleteStop :stop="stop" />
+
                     </template>
                 </template>
             </div>

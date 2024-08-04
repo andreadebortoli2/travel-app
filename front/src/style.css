@@ -6,3 +6,7 @@
     height: 75vh;
     margin: 1rem auto 0;
 }
+
+a {
+    text-decoration: none !important;
+}

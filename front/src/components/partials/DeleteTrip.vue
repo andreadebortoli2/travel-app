@@ -36,7 +36,7 @@ export default {
 
 <template>
     <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="`#delete-trip-${trip.id}`">
-        Del
+        <div v-html="store.trashIcon"></div>
     </button>
 
     <div class="modal fade" :id="`delete-trip-${trip.id}`" tabindex="-1" role="dialog"

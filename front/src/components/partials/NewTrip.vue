@@ -49,7 +49,9 @@ export default {
 
 <template>
     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#new-trip" aria-controls="new-trip">
-        <h2>+</h2>
+        <h2>
+            <div v-html="store.addIcon"></div>
+        </h2>
     </button>
 
     <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="new-trip" aria-labelledby="new-trip-offcanvas">
