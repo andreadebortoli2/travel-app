@@ -24,7 +24,7 @@ const router = createRouter({
             component: AddStopView
         },
         {
-            path: '/update-stop-to/:id/:date',
+            path: '/update-stop/:id/:date',
             name: 'update-stop',
             component: UpdateStopView
         },
