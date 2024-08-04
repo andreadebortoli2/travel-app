@@ -3,21 +3,19 @@ import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps"
 import { RouterLink } from 'vue-router';
 import { store } from '../../store';
+import UpdateDay from '../partials/UpdateDay.vue';
+import DeleteDay from '../partials/DeleteDay.vue';
+import DeleteStop from '../partials/DeleteStop.vue';
 
 export default {
     name: 'DayView',
     components: {
-        Map
+        UpdateDay, DeleteDay, DeleteStop
     },
     data() {
         return {
             store,
             day: {},
-            updateDayTitle: '',
-            updateDayDate: '',
-            updateDayDescription: '',
-            errors: {},
-            loading: false,
             stops: [],
         }
     },
@@ -27,85 +25,6 @@ export default {
                 this.day = response.data.day[0]
                 this.stops = response.data.stops
                 // console.log(this.day, this.stops);
-            })
-        },
-        // day CRUD
-        setUpdateValues(day) {
-            this.updateDayTitle = ''
-            this.updateDayDate = ''
-            this.updateDayDescription = ''
-            this.updateDayTitle = day.title
-            this.updateDayDate = day.date
-            this.updateDayDescription = day.description
-        },
-        editDay(id) {
-            const data = {
-                trip_id: this.day.trip_id,
-                title: this.updateDayTitle,
-                date: this.updateDayDate,
-                description: this.updateDayDescription
-            }
-            // console.log(data);
-
-            this.loading = true
-
-            axios.post(store.baseApiUrl + 'update-day/' + id, data).then(response => {
-                if (response.data.success) {
-                    this.updateDayTitle = ''
-                    this.updateDayDate = ''
-                    this.updateDayDescription = ''
-                    this.errors = {}
-                    // console.log(response.data.message);
-                    this.getSingleDay()
-                    document.getElementById(`close-update-day-offcanvas-${id}`).click()
-                }
-            }).catch(error => {
-                console.log(error);
-                if (error) {
-                    this.errors = error.response.data.errors
-                }
-            })
-
-            this.loading = false
-        },
-        deleteDay(id) {
-            let tripId = this.day.trip_id
-            axios.post(store.baseApiUrl + 'delete-day/' + id).then(response => {
-                if (response.data.success) {
-                    this.day = {}
-                    this.stops = []
-                    this.errors = {}
-                    // console.log(response.data.message);
-                    let modalBackground = document.querySelector('.modal-backdrop')
-                    if (modalBackground) {
-                        modalBackground.remove()
-                    }
-
-                    this.$router.push({ name: 'home' })
-                }
-            }).catch(error => {
-                console.log(error);
-                if (error) {
-                    this.errors = error.response.data.errors
-                }
-            })
-        },
-        // stop crud
-        deleteStop(id) {
-            axios.post(store.baseApiUrl + 'delete-stop/' + id).then(response => {
-                if (response.data.success) {
-                    this.errors = {}
-                    console.log(response.data.message);
-
-                    document.getElementById(`close-delete-stop-modal-${id}`).click()
-
-                    window.location.reload()
-                }
-            }).catch(error => {
-                console.log(error);
-                if (error) {
-                    this.errors = error.response.data.errors
-                }
             })
         },
         // map functions
@@ -118,31 +37,34 @@ export default {
             return map
         },
         addMarkers(map) {
-            let longitudes = []
-            let latitudes = []
-            this.stops.forEach(stop => {
-                // console.log(stop.position_longitude, stop.position_latitude);
-                longitudes.push(stop.position_longitude)
-                latitudes.push(stop.position_latitude)
-                let position = [stop.position_longitude, stop.position_latitude]
-                let marker = new tt.Marker().setLngLat(position).addTo(map)
-                let popup = new tt.Popup().setText(stop.name)
-                marker.setPopup(popup)
-            })
+            if (this.stops.length !== 0) {
 
-            let ne = [Math.max(...longitudes), Math.max(...latitudes)]
-            let sw = [Math.min(...longitudes), Math.min(...latitudes)]
+                let longitudes = []
+                let latitudes = []
 
-            var llb = new tt.LngLatBounds(sw, ne)
+                this.stops.forEach(stop => {
+                    // console.log(stop.position_longitude, stop.position_latitude);
+                    longitudes.push(stop.position_longitude)
+                    latitudes.push(stop.position_latitude)
+                    let position = [stop.position_longitude, stop.position_latitude]
+                    let marker = new tt.Marker().setLngLat(position).addTo(map)
+                    let popup = new tt.Popup().setText(stop.name)
+                    marker.setPopup(popup)
+                })
 
-            map.setZoom(-2)
-            map.fitBounds(llb, {
-                padding: { top: 25, bottom: 25, left: 25, right: 25 }
-            })
+                let ne = [Math.max(...longitudes), Math.max(...latitudes)]
+                let sw = [Math.min(...longitudes), Math.min(...latitudes)]
+
+                var llb = new tt.LngLatBounds(sw, ne)
+
+                map.setZoom(-2)
+                map.fitBounds(llb, {
+                    padding: { top: 25, bottom: 25, left: 25, right: 25 }
+                })
+            }
         }
     },
     async mounted() {
-        // this.addMap()
         await this.getSingleDay()
         this.addMarkers(this.addMap())
     }
@@ -163,86 +85,11 @@ export default {
                     </h2>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <!-- update day offcanvas trigger button -->
-                    <button class="btn" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-day-${day.id}`"
-                        :aria-controls="`edit-day-${day.id}`" @click="setUpdateValues(day)">
-                        U
-                    </button>
-                    <!-- delete day modal trigger button -->
-                    <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="`#delete-day-${day.id}`">
-                        Del
-                    </button>
-                    <!-- update day offcanvas body -->
-                    <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-day-${day.id}`"
-                        :aria-labelledby="`edit-day-${day.id}-offcanvas`">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" :id="`edit-day-${day.id}-offcanvas`">
-                                Edit day: {{ day.title }}
-                            </h5>
-                            <button type="button" class="btn-close" :id="`close-update-day-offcanvas-${day.id}`"
-                                data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
+                    <!-- update day offcanvas -->
+                    <UpdateDay :day="day" @update-day="getSingleDay()" />
 
-                        <div class="offcanvas-body">
-                            <form @submit.prevent="editDay(day.id)">
-
-                                <div class="mm-3">
-                                    <label for="edit-day-title" class="form-label">Title / destination
-                                        :</label>
-                                    <input type="text" class="form-control" name="edit-day-title" id="edit-day-title"
-                                        v-model="updateDayTitle" />
-                                </div>
-
-                                <div class="my-3">
-                                    <label for="edit-day-date" class="form-label">Date*
-                                        :</label>
-                                    <input type="text" onfocus="(this.type='date')" class="form-control"
-                                        name="edit-day-date" id="edit-day-date" v-model="updateDayDate" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="update-day-description" class="form-label">Description :</label>
-                                    <textarea class="form-control" name="update-day-description"
-                                        id="update-day-description" rows="3" v-model="updateDayDescription"></textarea>
-                                </div>
-
-                                <div class="my-3">
-                                    <button class="form-control" type="submit" :disabled="loading">
-                                        {{ loading ? 'Updating...' : 'Update the trip' }}
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
-                                <div v-for="error in errors">{{ error[0] }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- delete day modal body -->
-                    <div class="modal fade" :id="`delete-day-${day.id}`" tabindex="-1" role="dialog"
-                        :aria-labelledby="`delete-day-${day.id}-title`" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
-                            role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" :id="`delete-day-${day.id}-title`">
-                                        Delete day: <span class="text-danger">{{ day.title }}</span>
-                                    </h5>
-                                    <button type="button" class="btn-close" :id="`close-delete-day-modal-${day.id}`"
-                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">You're gonna delete it forever! <br> You'll also
-                                    loose all its days and stops!!</div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                    <button type="button" class="btn btn-danger"
-                                        @click="deleteDay(day.id)">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- delete day modal -->
+                    <DeleteDay :day="day" />
                 </div>
                 <p>
                     {{ day.description }}
@@ -254,37 +101,8 @@ export default {
                         <p>{{ stop.notes }}</p>
                         <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">U
                         </RouterLink>
-                        <!-- delete stop modal trigger button -->
-                        <button type="button" class="btn" data-bs-toggle="modal"
-                            :data-bs-target="`#delete-stop-${stop.id}`">
-                            Del
-                        </button>
-                        <!-- delete stop modal body -->
-                        <div class="modal fade" :id="`delete-stop-${stop.id}`" tabindex="-1" role="dialog"
-                            :aria-labelledby="`delete-stop-${stop.id}-title`" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
-                                role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" :id="`delete-stop-${stop.id}-title`">
-                                            Delete stop: <span class="text-danger">{{ stop.title }}</span>
-                                        </h5>
-                                        <button type="button" class="btn-close"
-                                            :id="`close-delete-stop-modal-${stop.id}`" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">You're gonna delete it forever! <br> You'll also
-                                        loose all its stops and stops!!</div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">
-                                            Close
-                                        </button>
-                                        <button type="button" class="btn btn-danger"
-                                            @click="deleteStop(stop.id)">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- delete stop modal -->
+                        <DeleteStop :stop="stop" />
                     </template>
                 </template>
             </div>
