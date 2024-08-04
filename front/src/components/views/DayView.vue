@@ -114,10 +114,4 @@ export default {
     </section>
 </template>
 
-<style scoped>
-#map {
-    width: 100%;
-    height: 75vh;
-    margin: 1rem auto 0;
-}
-</style>
+<style scoped></style>
