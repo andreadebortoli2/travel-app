@@ -2,6 +2,7 @@
 import axios from 'axios';
 import tt from "@tomtom-international/web-sdk-maps"
 import { RouterLink } from 'vue-router';
+import { store } from '../../store';
 
 export default {
     name: 'DayView',
@@ -10,6 +11,7 @@ export default {
     },
     data() {
         return {
+            store,
             day: {},
             updateDayTitle: '',
             updateDayDate: '',
@@ -21,7 +23,7 @@ export default {
     },
     methods: {
         async getSingleDay() {
-            await axios.get('http://127.0.0.1:8000/api/day' + this.$route.params.id).then(response => {
+            await axios.get(store.baseApiUrl + 'day' + this.$route.params.id).then(response => {
                 this.day = response.data.day[0]
                 this.stops = response.data.stops
                 // console.log(this.day, this.stops);
@@ -47,7 +49,7 @@ export default {
 
             this.loading = true
 
-            axios.post('http://127.0.0.1:8000/api/update-day/' + id, data).then(response => {
+            axios.post(store.baseApiUrl + 'update-day/' + id, data).then(response => {
                 if (response.data.success) {
                     this.updateDayTitle = ''
                     this.updateDayDate = ''
@@ -68,7 +70,7 @@ export default {
         },
         deleteDay(id) {
             let tripId = this.day.trip_id
-            axios.post('http://127.0.0.1:8000/api/delete-day/' + id).then(response => {
+            axios.post(store.baseApiUrl + 'delete-day/' + id).then(response => {
                 if (response.data.success) {
                     this.day = {}
                     this.stops = []
@@ -90,7 +92,7 @@ export default {
         },
         // stop crud
         deleteStop(id) {
-            axios.post('http://127.0.0.1:8000/api/delete-stop/' + id).then(response => {
+            axios.post(store.baseApiUrl + 'delete-stop/' + id).then(response => {
                 if (response.data.success) {
                     this.errors = {}
                     console.log(response.data.message);
@@ -109,24 +111,38 @@ export default {
         // map functions
         addMap() {
             const map = tt.map({
-                key: "koaCbZL6M2ThGOlvwAqsz9z3lopU60iG",
+                key: store.mapKey,
                 container: "map",
             })
 
             return map
         },
         addMarkers(map) {
+            let longitudes = []
+            let latitudes = []
             this.stops.forEach(stop => {
                 // console.log(stop.position_longitude, stop.position_latitude);
+                longitudes.push(stop.position_longitude)
+                latitudes.push(stop.position_latitude)
                 let position = [stop.position_longitude, stop.position_latitude]
                 let marker = new tt.Marker().setLngLat(position).addTo(map)
                 let popup = new tt.Popup().setText(stop.name)
                 marker.setPopup(popup)
             })
+
+            let ne = [Math.max(...longitudes), Math.max(...latitudes)]
+            let sw = [Math.min(...longitudes), Math.min(...latitudes)]
+
+            var llb = new tt.LngLatBounds(sw, ne)
+
+            map.setZoom(-2)
+            map.fitBounds(llb, {
+                padding: { top: 25, bottom: 25, left: 25, right: 25 }
+            })
         }
     },
     async mounted() {
-        this.addMap()
+        // this.addMap()
         await this.getSingleDay()
         this.addMarkers(this.addMap())
     }
