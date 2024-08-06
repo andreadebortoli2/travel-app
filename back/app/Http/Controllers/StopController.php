@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Stop;
 use App\Http\Requests\StoreStopRequest;
 use App\Http\Requests\UpdateStopRequest;
+use Illuminate\Support\Facades\Storage;
 
 class StopController extends Controller
 {
@@ -31,11 +32,16 @@ class StopController extends Controller
     {
         $validated = $request->all();
 
+        if ($request->has('image')) {
+            $image = Storage::put('stops-images', $validated['image']);
+            $validated['image'] = $image;
+        }
+
         Stop::create($validated);
 
         return response()->json([
             'success' => true,
-            'message' => "Stop created"
+            'message' => "Stop created",
         ]);
     }
 
@@ -67,7 +73,14 @@ class StopController extends Controller
     {
         $validated = $request->all();
 
-        $stop = Stop::where('id', $id);
+        $stop = Stop::find($id);
+
+        if ($request->has('image')) {
+            Storage::delete($stop->image);
+            $image = Storage::put('stops-images', $request['image']);
+            $validated['image'] = $image;
+        }
+
         $stop->update($validated);
 
         return response()->json([
@@ -77,11 +90,35 @@ class StopController extends Controller
     }
 
     /**
+     * Remove the image of the specified resource from storage.
+     */
+    public function delete_image($id)
+    {
+        $stop = Stop::find($id);
+
+        if ($stop->image) {
+            Storage::delete($stop->image);
+
+            $stop->image = null;
+            $stop->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Stop $id image deleted"
+        ]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        $stop = Stop::where('id', $id);
+        $stop = Stop::find($id);
+
+        if ($stop->image) {
+            Storage::delete($stop->image);
+        }
 
         $stop->delete();
 

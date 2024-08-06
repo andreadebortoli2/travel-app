@@ -19,10 +19,12 @@ export default {
             updateDayId: '',
             updateStopImage: '',
             loading: false,
-            errors: {}
+            errors: {},
+            imagePreviewUrl: ''
         }
     },
     methods: {
+        // current data
         async getCurrentStop(id) {
             await axios.get(store.baseApiUrl + 'stop' + id).then(response => {
                 // console.log(response.data.stop[0]);
@@ -43,8 +45,8 @@ export default {
                 this.updateStopNotes = this.stop.notes
                 this.updateStopRating = this.stop.rating
             })
-
         },
+        // map functions
         addMap() {
             const map = tt.map({
                 key: store.mapKey,
@@ -106,7 +108,13 @@ export default {
                 this.updateStopName = result.address.freeformAddress
             }
         },
+        // update axios call
         updateStop() {
+
+            if (typeof this.updateStopImage === "string") {
+                this.updateStopImage = {}
+            }
+
             const data = {
                 day_id: this.updateDayId,
                 name: this.updateStopName,
@@ -117,13 +125,58 @@ export default {
                 rating: this.updateStopRating,
             }
             // console.log(data);
+
             this.loading = true
 
-            axios.post(store.baseApiUrl + 'update-stop/' + this.$route.params.id, data).then(response => {
+            axios.post(store.baseApiUrl + 'update-stop/' + this.$route.params.id, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
                 if (response.data.success) {
+                    this.updateDayId = ''
+                    this.updateStopName = ''
+                    this.updateStopLongitude = ''
+                    this.updateStopLatitude = ''
+                    this.updateStopImage = ''
+                    this.updateStopNotes = ''
+                    this.updateStopRating = ''
                     this.errors = {}
-                    console.log(response.data.message);
+                    // console.log(response.data.message);
                     this.$router.push({ name: 'day', params: { id: this.stop.day_id, date: this.$route.params.date } })
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error) {
+                    this.errors = error.response.data.errors
+                }
+            })
+
+            this.loading = false
+        },
+        // image handler
+        updateImage(e) {
+            // console.log(e.target.files || e.dataTransfer.files);
+
+            let image = e.target.files || e.dataTransfer.files
+
+            this.imagePreviewUrl = URL.createObjectURL(image[0])
+
+            this.updateStopImage = image[0]
+            console.log(this.updateStopImage);
+
+        },
+        deleteOldImage() {
+            const data = {
+                image: this.updateStopImage,
+            }
+            // console.log(data);
+
+            this.loading = true
+
+            axios.post(store.baseApiUrl + 'delete-stop-image/' + this.$route.params.id, data).then(response => {
+                if (response.data.success) {
+                    console.log(response.data.message);
                 }
             }).catch(error => {
                 console.log(error);
@@ -147,7 +200,7 @@ export default {
         <div class="row">
             <div class="col m-2">
                 <!-- left col -->
-                <form @submit.prevent="updateStop()">
+                <form @submit.prevent="updateStop()" enctype="multipart/form-data">
                     <div class="mm-3">
                         <label for="update-stop-title" class="form-label">Name / Location :</label>
                         <input type="text" class="form-control" name="update-stop-title" id="update-stop-title"
@@ -158,6 +211,24 @@ export default {
                         <label for="update-stop-description" class="form-label">Notes :</label>
                         <textarea class="form-control" name="update-stop-description" id="update-stop-description"
                             rows="3" v-model="updateStopNotes"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="update-stop-image" class="form-label">Stop image :</label>
+                        <input type="file" class="form-control" name="update-stop-image" id="update-stop-image"
+                            @change="updateImage">
+                    </div>
+
+                    <div class="images d-flex justify-content-evenly">
+                        <div class="old-image">
+                            <p>old image</p>
+                            <img :src="store.imageBaseUrl + stop.image" alt="">
+                        </div>
+                        <div class="btn btn-danger" @click="deleteOldImage()">del img</div>
+                        <div class="new-image">
+                            <p>new image</p>
+                            <img :src="imagePreviewUrl" alt="">
+                        </div>
                     </div>
 
                     <div class="mb-3">

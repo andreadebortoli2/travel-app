@@ -25,7 +25,7 @@ class StoreStopRequest extends FormRequest
             'name' => 'required|string|max:255',
             'position_longitude' => 'required|string|max:255',
             'position_latitude' => 'required|string|max:255',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:150',
             'notes' => 'nullable|string',
             'rating' => 'nullable|numeric',
             'day_id' => 'required|exists:days,id'

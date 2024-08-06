@@ -11,12 +11,14 @@ export default {
         return {
             store,
             newStopName: '',
-            newStopNotes: '',
-            newStopRating: '',
             newStopPositionLongitude: '',
             newStopPositionLatitude: '',
+            newStopImage: '',
+            newStopNotes: '',
+            newStopRating: '',
             loading: false,
-            errors: ''
+            errors: '',
+            imagePreview: ''
         }
     },
     methods: {
@@ -26,7 +28,7 @@ export default {
                 name: this.newStopName,
                 position_longitude: this.newStopPositionLongitude.toString(),
                 position_latitude: this.newStopPositionLatitude.toString(),
-                image: '',
+                image: this.newStopImage,
                 notes: this.newStopNotes,
                 rating: this.newStopRating,
             }
@@ -34,11 +36,16 @@ export default {
 
             this.loading = true
 
-            axios.post(store.baseApiUrl + 'new-stop', data).then(response => {
+            axios.post(store.baseApiUrl + 'new-stop', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
                 if (response.data.success) {
                     this.newStopName = ''
                     this.newStopPositionLongitude = ''
                     this.newStopPositionLatitude = ''
+                    this.newStopImage = ''
                     this.newStopNotes = ''
                     this.newStopRating = ''
                     this.errors = {}
@@ -53,6 +60,16 @@ export default {
             })
 
             this.loading = false
+        },
+        // image handler
+        newImage(e) {
+            // console.log(e.target.files || e.dataTransfer.files);
+
+            let image = e.target.files || e.dataTransfer.files
+
+            this.imagePreview = URL.createObjectURL(image[0])
+
+            this.newStopImage = image[0]
         },
         // map
         addMap() {
@@ -122,7 +139,7 @@ export default {
         <div class="row">
             <div class="col m-2">
                 <!-- left col -->
-                <form @submit.prevent="createNewStop()">
+                <form @submit.prevent="createNewStop()" enctype="multipart/form-data">
                     <div class="mm-3">
                         <label for="new-stop-title" class="form-label">Name / Location :</label>
                         <input type="text" class="form-control" name="new-stop-title" id="new-stop-title"
@@ -133,6 +150,17 @@ export default {
                         <label for="new-stop-description" class="form-label">Notes :</label>
                         <textarea class="form-control" name="new-stop-description" id="new-stop-description" rows="3"
                             v-model="newStopNotes"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="new-stop-image" class="form-label">Stop image :</label>
+                        <input type="file" class="form-control" name="new-stop-image" id="new-stop-image"
+                            @change="newImage">
+                    </div>
+
+                    <div class="new-image">
+                        <p>new image</p>
+                        <img :src="imagePreview" alt="">
                     </div>
 
                     <div class="mb-3">

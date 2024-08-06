@@ -41,3 +41,4 @@ Route::post('delete-day/{day_id}', [DayController::class, 'destroy']);
 Route::post('new-stop', [StopController::class, 'store']);
 Route::post('update-stop/{stop_id}', [StopController::class, 'update']);
 Route::post('delete-stop/{stop_id}', [StopController::class, 'destroy']);
+Route::post('delete-stop-image/{stop_id}', [StopController::class, 'delete_image']);

@@ -107,6 +107,7 @@ export default {
                         <h5><i class="fa-solid fa-location-dot"></i> {{ stop.name }} </h5>
                         <div v-if="stop.rating"> - {{ stop.rating }}/5</div>
                         <p>{{ stop.notes }}</p>
+                        <img :src="store.imageBaseUrl + stop.image" alt="">
                         <button class="btn">
                             <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
                                 <div v-html="store.editIcon"></div>

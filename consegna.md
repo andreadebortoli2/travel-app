@@ -80,6 +80,7 @@ https://dev.to/donnierich/api-key-management-on-netlify-4il9
 - create form to delete stop ✅
 - set controller to delete stop and expose post api ✅
 - code refactoring  (general) ✅
+- add stops images in all cruds ✅
 - style all pages
     - stop details as accordion
     - icons ✅
