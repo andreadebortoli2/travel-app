@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-    <button class="btn" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-trip-${trip.id}`"
+    <button class="btn btn-light" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-trip-${trip.id}`"
         :aria-controls="`edit-trip-${trip.id}`" @click="setUpdateValues(trip)">
         <div v-html="store.editIcon"></div>
     </button>

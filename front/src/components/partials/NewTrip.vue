@@ -48,8 +48,9 @@ export default {
 </script>
 
 <template>
-    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#new-trip" aria-controls="new-trip">
-        <h2>
+    <button class="btn btn-outline-light text-primary-emphasis" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#new-trip" aria-controls="new-trip">
+        <h2 class="m-0">
             <div v-html="store.addIcon"></div>
         </h2>
     </button>
@@ -92,4 +93,6 @@ export default {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.btn {}
+</style>

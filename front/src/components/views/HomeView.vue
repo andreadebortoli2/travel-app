@@ -16,7 +16,7 @@ export default {
         return {
             store,
             trips: [],
-            singleTrip: {},
+            singleTrip: null,
             singleTripDays: {},
             errors: {},
             loading: false,
@@ -35,6 +35,17 @@ export default {
                 this.singleTrip = response.data.trip[0]
                 this.singleTripDays = response.data.days
                 // console.log(this.singleTrip, this.singleTripDays);
+                let allCards = document.querySelectorAll('.trip')
+                allCards.forEach(card => {
+                    card.classList.remove('bg-info-subtle')
+                    card.classList.remove('text-info')
+                    card.classList.add('text-primary-emphasis')
+                });
+
+                let tripCard = document.getElementById(`trip-${id}`)
+                tripCard.classList.add('bg-info-subtle')
+                tripCard.classList.remove('text-primary-emphasis')
+                tripCard.classList.add('text-info')
             })
         },
     },
@@ -45,57 +56,71 @@ export default {
 </script>
 
 <template>
-    <section>
-        <div class="row">
-            <!-- left col -->
-            <div class="col m-1">
-                <div class="d-flex justify-content-between">
-                    <h2>Your trips:</h2>
+    <section id="home">
+        <div class="container pt-4">
+            <div class="row">
+                <!-- left col -->
+                <div class="col mt-4 pt-4">
+
+                    <!-- left col -->
+                    <template v-for="trip in trips">
+                        <div class="trip card bg-light mb-3 text-primary-emphasis" :id="`trip-${trip.id}`"
+                            @click="getSingleTrip(trip.id)">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <p class="card-text w-75 text-primary-emphasis">{{ trip.start_date }}</p>
+                                    <div>
+                                        <!-- update trip offcanvas -->
+                                        <UpdateTrip :trip="trip" @update-trip="getTrips()" />
+
+                                        <!-- delete trip modal -->
+                                        <DeleteTrip :trip="trip" @delete-trip="getTrips()" />
+                                    </div>
+                                </div>
+                                <h4 class="card-title">{{ trip.title }}</h4>
+                            </div>
+                        </div>
+                    </template>
+
                     <!-- new trip offcanvas -->
-                    <NewTrip @new-trip="getTrips()" />
-                </div>
-
-                <!-- left col table -->
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover table-borderless table-success align-middle">
-                        <tbody>
-                            <tr v-for="trip in trips" @click="getSingleTrip(trip.id)">
-                                <td class="w-25">{{ trip.start_date }}</td>
-                                <td class="text-primary"><strong>{{ trip.title }}</strong></td>
-                                <td>
-                                    <!-- update trip offcanvas -->
-                                    <UpdateTrip :trip="trip" @update-trip="getTrips()" />
-
-                                    <!-- delete trip modal -->
-                                    <DeleteTrip :trip="trip" @delete-trip="getTrips()" />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- right col -->
-            <div class="col m-1">
-                <div v-if="singleTrip">
-                    <div class="d-flex justify-content-between">
-                        <h3>{{ singleTrip.title }}</h3>
-                        <!-- new day offcanvas -->
-                        <NewDay :singleTrip="singleTrip" />
+                    <div class="d-flex justify-content-center">
+                        <NewTrip @new-trip="getTrips()" />
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover table-borderless table-info align-middle">
-                            <tbody>
-                                <template v-for="day in singleTripDays">
-                                    <tr>
-                                        <RouterLink :to="{ name: 'day', params: { id: day.id, date: day.date } }">
-                                            <td class="w-25 p-2">{{ day.date }}</td>
-                                            <td class="text-success" v-if="day.title"><strong>{{ day.title }}</strong>
-                                            </td>
-                                        </RouterLink>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                </div>
+                <!-- right col -->
+                <div class="col mt-4 pt-4">
+                    <div v-if="singleTrip !== null">
+                        <div class="card text-info-emphasis bg-info-subtle">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h3 class="card-title">{{ singleTrip.title }}</h3>
+                                    <!-- new day offcanvas -->
+                                    <NewDay :singleTrip="singleTrip" />
+                                </div>
+                                <div class="card-text">
+                                    <div class="table-responsive">
+                                        <table
+                                            class="table table-striped table-hover table-borderless table-info align-middle">
+                                            <tbody>
+                                                <template v-for="day in singleTripDays">
+                                                    <tr>
+                                                        <RouterLink
+                                                            :to="{ name: 'day', params: { id: day.id, date: day.date } }">
+                                                            <td class="text-primary-emphasis w-25 p-2">{{ day.date }}
+                                                            </td>
+                                                            <td class="text-success" v-if="day.title"><strong>{{
+                                                                day.title
+                                                                    }}</strong>
+                                                            </td>
+                                                        </RouterLink>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,4 +128,8 @@ export default {
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.card {
+    box-shadow: 0px 0px 40px 10px rgba(0, 0, 0, 0.3);
+}
+</style>

@@ -62,8 +62,8 @@ export default {
 </script>
 
 <template>
-    <button class="btn" type="button" data-bs-toggle="offcanvas" :data-bs-target="`#edit-day-${day.id}`"
-        :aria-controls="`edit-day-${day.id}`" @click="setUpdateValues(day)">
+    <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas"
+        :data-bs-target="`#edit-day-${day.id}`" :aria-controls="`edit-day-${day.id}`" @click="setUpdateValues(day)">
         <div v-html="store.editIcon"></div>
     </button>
 

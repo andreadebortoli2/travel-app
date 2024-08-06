@@ -37,7 +37,8 @@ export default {
 </script>
 
 <template>
-    <button type="button" class="btn" data-bs-toggle="modal" :data-bs-target="`#delete-day-${day.id}`">
+    <button type="button" class="btn btn-outline-danger ms-3" data-bs-toggle="modal"
+        :data-bs-target="`#delete-day-${day.id}`">
         <div v-html="store.trashIcon"></div>
     </button>
 

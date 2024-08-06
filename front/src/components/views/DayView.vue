@@ -77,51 +77,60 @@ export default {
 </script>
 
 <template>
-    <section>
-        <div class="row">
-            <div class="col">
-                <!-- left col -->
-                <div class="d-flex justify-content-between">
-                    <h2 class="w-50">
-                        {{ day.date }}
-                    </h2>
-                    <h2 v-if="day.title">
-                        {{ day.title }}
-                    </h2>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <!-- update day offcanvas -->
-                    <UpdateDay :day="day" @update-day="getSingleDay()" />
+    <section id="day">
+        <div class="container pt-4">
+            <div class="row pt-4">
+                <div class="col pt-4">
+                    <!-- left col -->
+                    <div class="d-flex justify-content-between">
+                        <h2 class="w-50">
+                            {{ day.date }}
+                        </h2>
+                        <h2 v-if="day.title">
+                            {{ day.title }}
+                        </h2>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <!-- update day offcanvas -->
+                        <UpdateDay :day="day" @update-day="getSingleDay()" />
 
-                    <!-- delete day modal -->
-                    <DeleteDay :day="day" />
-                </div>
-                <p>
-                    {{ day.description }}
-                </p>
-                <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">
-                    <h2 v-html="store.addIcon"></h2>
-                </RouterLink>
-                <template v-if="stops">
-                    <template v-for="stop in stops">
-                        <h5><i class="fa-solid fa-location-dot"></i> {{ stop.name }} </h5>
-                        <div v-if="stop.rating"> - {{ stop.rating }}/5</div>
-                        <p>{{ stop.notes }}</p>
-                        <img :src="store.imageBaseUrl + stop.image" alt="">
-                        <button class="btn">
-                            <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
-                                <div v-html="store.editIcon"></div>
-                            </RouterLink>
+                        <!-- delete day modal -->
+                        <DeleteDay :day="day" />
+                    </div>
+                    <p>
+                        {{ day.description }}
+                    </p>
+                    <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">
+                        <button class="btn btn-outline-light text-primary-emphasis" type="button">
+                            <h2 class="m-0">
+                                <div v-html="store.addIcon"></div>
+                            </h2>
                         </button>
-                        <!-- delete stop modal -->
-                        <DeleteStop :stop="stop" />
+                    </RouterLink>
 
+                    <template v-if="stops">
+                        <template v-for="stop in stops">
+                            <h5><i class="fa-solid fa-location-dot"></i> {{ stop.name }} </h5>
+                            <div v-if="stop.rating"> - {{ stop.rating }}/5</div>
+                            <p>{{ stop.notes }}</p>
+                            <img :src="store.imageBaseUrl + stop.image" alt="">
+                            <button class="btn">
+                                <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
+                                    <button class="btn btn-outline-light" type="button">
+                                        <div v-html="store.editIcon"></div>
+                                    </button>
+                                </RouterLink>
+                            </button>
+                            <!-- delete stop modal -->
+                            <DeleteStop :stop="stop" />
+
+                        </template>
                     </template>
-                </template>
-            </div>
-            <div class="col">
-                <!-- right col -->
-                <div id='map'></div>
+                </div>
+                <div class="col">
+                    <!-- right col -->
+                    <div id='map'></div>
+                </div>
             </div>
         </div>
     </section>
