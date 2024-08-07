@@ -163,7 +163,7 @@ export default {
             this.imagePreviewUrl = URL.createObjectURL(image[0])
 
             this.updateStopImage = image[0]
-            console.log(this.updateStopImage);
+            // console.log(this.updateStopImage);
 
         },
         deleteOldImage() {
@@ -176,7 +176,7 @@ export default {
 
             axios.post(store.baseApiUrl + 'delete-stop-image/' + this.$route.params.id, data).then(response => {
                 if (response.data.success) {
-                    console.log(response.data.message);
+                    // console.log(response.data.message);
                 }
             }).catch(error => {
                 console.log(error);
@@ -196,65 +196,92 @@ export default {
 </script>
 
 <template>
-    <section>
-        <div class="row">
-            <div class="col m-2">
-                <!-- left col -->
-                <form @submit.prevent="updateStop()" enctype="multipart/form-data">
-                    <div class="mm-3">
-                        <label for="update-stop-title" class="form-label">Name / Location :</label>
-                        <input type="text" class="form-control" name="update-stop-title" id="update-stop-title"
-                            placeholder="Rome" v-model="updateStopName" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="update-stop-description" class="form-label">Notes :</label>
-                        <textarea class="form-control" name="update-stop-description" id="update-stop-description"
-                            rows="3" v-model="updateStopNotes"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="update-stop-image" class="form-label">Stop image :</label>
-                        <input type="file" class="form-control" name="update-stop-image" id="update-stop-image"
-                            @change="updateImage">
-                    </div>
-
-                    <div class="images d-flex justify-content-evenly">
-                        <div class="old-image">
-                            <p>old image</p>
-                            <img :src="store.imageBaseUrl + stop.image" alt="">
+    <section id="update-stop">
+        <div class="container">
+            <div class="row">
+                <div class="col m-2">
+                    <!-- left col -->
+                    <form @submit.prevent="updateStop()" enctype="multipart/form-data">
+                        <div class="mm-3">
+                            <label for="update-stop-title" class="form-label">Name / Location :</label>
+                            <input type="text" class="form-control" name="update-stop-title" id="update-stop-title"
+                                placeholder="Rome" v-model="updateStopName" />
                         </div>
-                        <div class="btn btn-danger" @click="deleteOldImage()">del img</div>
-                        <div class="new-image">
-                            <p>new image</p>
-                            <img :src="imagePreviewUrl" alt="">
+
+                        <div class="mb-3">
+                            <label for="update-stop-description" class="form-label">Notes :</label>
+                            <textarea class="form-control" name="update-stop-description" id="update-stop-description"
+                                rows="3" v-model="updateStopNotes"></textarea>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="update-stop-rating" class="form-label">Stop rating :</label>
-                        <input type="range" class="form-range" min="0" max="5" id="update-stop-rating"
-                            v-model="updateStopRating">
-                    </div>
+                        <div class="mb-3">
+                            <label for="update-stop-image" class="form-label">Image :</label>
+                            <input type="file" class="form-control" name="update-stop-image" id="update-stop-image"
+                                @change="updateImage">
+                        </div>
 
-                    <div class="my-3">
-                        <button class="form-control" type="submit" :disabled="loading">
-                            {{ loading ? 'Updating...' : 'Update stop' }}
-                        </button>
-                    </div>
-                </form>
+                        <div class="images mb-3">
+                            <div class="d-flex justify-content-around">
+                                <p>old</p>
+                                <p>new</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="image">
+                                    <img :src="store.imageBaseUrl + stop.image" alt="" v-if="stop.image">
+                                </div>
+                                <div class="image">
+                                    <img :src="imagePreviewUrl" alt="" v-if="imagePreviewUrl">
+                                </div>
+                            </div>
+                            <div class="w-50 text-center" v-if="stop.image">
+                                <div class="btn btn-danger mt-2" v-html="store.trashIcon" @click="deleteOldImage()">
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
-                    <div v-for="error in errors">{{ error[0] }}</div>
+                        <div class="mb-3">
+                            <label for="update-stop-rating" class="form-label">Rating :</label>
+                            <div class="d-flex justify-content-between">
+                                <p>0</p>
+                                <p v-for="n in 5">{{ n }}</p>
+                            </div>
+                            <input type="range" class="form-range" min="0" max="5" id="update-stop-rating"
+                                v-model="updateStopRating">
+                        </div>
+
+                        <div class="my-3">
+                            <button class="form-control" type="submit" :disabled="loading">
+                                {{ loading ? 'Updating...' : 'Update stop' }}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                        <div v-for="error in errors">{{ error[0] }}</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- right col -->
+                    <div id='map'></div>
                 </div>
             </div>
-            <div class="col">
-                <!-- right col -->
-                <div id='map'></div>
-            </div>
         </div>
-
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.images {
+    .image {
+        border: 3px solid black;
+        width: 49%;
+        aspect-ratio: 1;
+        text-align: center;
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+    }
+}
+</style>

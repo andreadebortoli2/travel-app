@@ -76,7 +76,9 @@ class StopController extends Controller
         $stop = Stop::find($id);
 
         if ($request->has('image')) {
-            Storage::delete($stop->image);
+            if ($stop->image) {
+                Storage::delete($stop->image);
+            }
             $image = Storage::put('stops-images', $request['image']);
             $validated['image'] = $image;
         }

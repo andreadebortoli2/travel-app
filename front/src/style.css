@@ -2,21 +2,19 @@
 @import "@tomtom-international/web-sdk-plugin-searchbox";
 
 #app {
-    height: 100vh;
+    min-height: 100vh;
 }
 
 header {
     background-color: rgba(255, 154, 0, 1);
 }
 
-#home {
-    height: 100vh;
-    background: rgb(12, 134, 103);
-    background: linear-gradient(0deg, rgba(89, 182, 159, 1) 95%, rgba(255, 154, 0, 1) 100%);
-}
-
-#day {
-    height: 100vh;
+#home,
+#day,
+#add-stop,
+#update-stop {
+    padding-top: 3rem;
+    min-height: 100vh;
     background: rgb(12, 134, 103);
     background: linear-gradient(0deg, rgba(89, 182, 159, 1) 95%, rgba(255, 154, 0, 1) 100%);
 }

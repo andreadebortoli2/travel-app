@@ -57,10 +57,10 @@ export default {
 
 <template>
     <section id="home">
-        <div class="container pt-4">
+        <div class="container">
             <div class="row">
                 <!-- left col -->
-                <div class="col mt-4 pt-4">
+                <div class="col mt-4">
 
                     <!-- left col -->
                     <template v-for="trip in trips">
@@ -88,7 +88,7 @@ export default {
                     </div>
                 </div>
                 <!-- right col -->
-                <div class="col mt-4 pt-4">
+                <div class="col mt-4">
                     <div v-if="singleTrip !== null">
                         <div class="card text-info-emphasis bg-info-subtle">
                             <div class="card-body">

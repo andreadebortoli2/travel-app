@@ -34,8 +34,7 @@ export default {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-        :data-bs-target="`#delete-stop-${stop.id}`">
+    <button type="button" class="btn open-modal" data-bs-toggle="modal" :data-bs-target="`#delete-stop-${stop.id}`">
         <div v-html="store.trashIcon"></div>
     </button>
 
@@ -63,4 +62,12 @@ export default {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.open-modal {
+    color: orangered;
+
+    &:hover {
+        color: gold;
+    }
+}
+</style>

@@ -135,57 +135,86 @@ export default {
 </script>
 
 <template>
-    <section>
-        <div class="row">
-            <div class="col m-2">
-                <!-- left col -->
-                <form @submit.prevent="createNewStop()" enctype="multipart/form-data">
-                    <div class="mm-3">
-                        <label for="new-stop-title" class="form-label">Name / Location :</label>
-                        <input type="text" class="form-control" name="new-stop-title" id="new-stop-title"
-                            placeholder="Rome" v-model="newStopName" />
-                    </div>
+    <section id="add-stop">
+        <div class="container">
+            <div class="row">
+                <div class="col m-2">
+                    <!-- left col -->
+                    <form @submit.prevent="createNewStop()" enctype="multipart/form-data">
+                        <div class="mm-3">
+                            <label for="new-stop-title" class="form-label">Name / Location :</label>
+                            <input type="text" class="form-control" name="new-stop-title" id="new-stop-title"
+                                placeholder="Rome" v-model="newStopName" />
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="new-stop-description" class="form-label">Notes :</label>
-                        <textarea class="form-control" name="new-stop-description" id="new-stop-description" rows="3"
-                            v-model="newStopNotes"></textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label for="new-stop-description" class="form-label">Notes :</label>
+                            <textarea class="form-control" name="new-stop-description" id="new-stop-description"
+                                rows="3" v-model="newStopNotes"></textarea>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="new-stop-image" class="form-label">Stop image :</label>
-                        <input type="file" class="form-control" name="new-stop-image" id="new-stop-image"
-                            @change="newImage">
-                    </div>
+                        <div class="mb-3">
+                            <label for="new-stop-image" class="form-label">Image :</label>
+                            <input type="file" class="form-control" name="new-stop-image" id="new-stop-image"
+                                @change="newImage">
+                        </div>
 
-                    <div class="new-image">
-                        <p>new image</p>
-                        <img :src="imagePreview" alt="">
-                    </div>
+                        <div class="new-image mb-3">
+                            <div class="d-flex justify-content-between w-50">
+                                <div class="image">
+                                    <img :src="imagePreview" alt="" v-if="imagePreview">
+                                </div>
+                                <div class="btn btn-danger mx-3" v-html="store.trashIcon"></div>
+                            </div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="new-stop-rating" class="form-label">Stop rating :</label>
-                        <input type="range" class="form-range" min="0" max="5" id="new-stop-rating"
-                            v-model="newStopRating">
-                    </div>
+                        <div class="mb-3">
+                            <label for="new-stop-rating" class="form-label">Rating :</label>
+                            <div class="d-flex justify-content-between">
+                                <p>0</p>
+                                <p v-for="n in 5">{{ n }}</p>
+                            </div>
+                            <input type="range" class="form-range" min="0" max="5" id="new-stop-rating"
+                                v-model="newStopRating">
+                        </div>
 
-                    <div class="my-3">
-                        <button class="form-control" type="submit" :disabled="loading">
-                            {{ loading ? 'Creating...' : 'Add a new stop' }}
-                        </button>
-                    </div>
-                </form>
+                        <div class="my-3">
+                            <button class="form-control" type="submit" :disabled="loading">
+                                {{ loading ? 'Creating...' : 'Add a new stop' }}
+                            </button>
+                        </div>
+                    </form>
 
-                <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
-                    <div v-for="error in errors">{{ error[0] }}</div>
+                    <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                        <div v-for="error in errors">{{ error[0] }}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <!-- right col -->
-                <div id='map'></div>
+                <div class="col">
+                    <!-- right col -->
+                    <div id='map'></div>
+                </div>
             </div>
         </div>
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.new-image {
+    .image {
+        border: 3px solid black;
+        height: 20vh;
+        aspect-ratio: 1;
+        text-align: center;
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+    }
+
+    .btn {
+        height: fit-content;
+    }
+}
+</style>

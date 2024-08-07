@@ -78,9 +78,9 @@ export default {
 
 <template>
     <section id="day">
-        <div class="container pt-4">
-            <div class="row pt-4">
-                <div class="col pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col">
                     <!-- left col -->
                     <div class="d-flex justify-content-between">
                         <h2 class="w-50">
@@ -108,24 +108,85 @@ export default {
                         </button>
                     </RouterLink>
 
-                    <template v-if="stops">
-                        <template v-for="stop in stops">
-                            <h5><i class="fa-solid fa-location-dot"></i> {{ stop.name }} </h5>
-                            <div v-if="stop.rating"> - {{ stop.rating }}/5</div>
-                            <p>{{ stop.notes }}</p>
-                            <img :src="store.imageBaseUrl + stop.image" alt="">
-                            <button class="btn">
-                                <RouterLink :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
-                                    <button class="btn btn-outline-light" type="button">
-                                        <div v-html="store.editIcon"></div>
-                                    </button>
-                                </RouterLink>
-                            </button>
-                            <!-- delete stop modal -->
-                            <DeleteStop :stop="stop" />
+                    <div class="stops">
+                        <template v-if="stops">
+                            <template v-for="stop in stops">
 
+                                <div class="accordion accordion-flush mb-1" :id="`stop-${stop.id}`">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" :id="`flush-heading-stop-${stop.id}`">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                :data-bs-target="`#flush-collapse-stop-${stop.id}`" aria-expanded="true"
+                                                :aria-controls="`flush-collapse-stop-${stop.id}`">
+                                                <i class="fa-solid fa-location-dot me-3"></i>
+                                                <strong>{{ stop.name }}</strong>
+                                            </button>
+                                        </h2>
+                                        <div :id="`flush-collapse-stop-${stop.id}`"
+                                            class="accordion-collapse collapse bg-success-subtle"
+                                            :aria-labelledby="`flush-heading-stop-${stop.id}`"
+                                            :data-bs-parent="`#stop-${stop.id}`">
+                                            <div class="accordion-body">
+                                                <div class="row">
+                                                    <div class="col col-9">
+                                                        <p>{{ stop.notes }}</p>
+                                                        <div>{{ stop.rating }}</div>
+                                                        <div class="d-flex">
+                                                            <button class="btn">
+                                                                <RouterLink
+                                                                    :to="{ name: 'update-stop', params: { id: stop.id, date: day.date } }">
+                                                                    <button class="btn btn-outline-light" type="button">
+                                                                        <div v-html="store.editIcon"></div>
+                                                                    </button>
+                                                                </RouterLink>
+                                                            </button>
+                                                            <!-- delete stop modal -->
+                                                            <DeleteStop :stop="stop" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col col-3 p-0">
+                                                        <div class="image-frame">
+                                                            <template v-if="stop.image">
+
+                                                                <!-- Modal trigger button -->
+                                                                <button type="button" class="btn image-modal-btn p-0"
+                                                                    data-bs-toggle="modal"
+                                                                    :data-bs-target="`#modal-stop-${stop.id}-image`">
+                                                                    <img class="modal-btn-image"
+                                                                        :src="store.imageBaseUrl + stop.image" alt="">
+                                                                </button>
+
+                                                                <!-- Modal Body -->
+                                                                <div class="modal fade"
+                                                                    :id="`modal-stop-${stop.id}-image`" tabindex="-1"
+                                                                    role="dialog" aria-labelledby="modalTitleId"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+                                                                        role="document">
+                                                                        <div class="modal-content bg-secondary-subtle">
+                                                                            <div class="modal-body pt-0">
+                                                                                <button type="button"
+                                                                                    class="btn-close m-1"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                                <img :src="store.imageBaseUrl + stop.image"
+                                                                                    alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
                         </template>
-                    </template>
+                    </div>
                 </div>
                 <div class="col">
                     <!-- right col -->
@@ -136,4 +197,44 @@ export default {
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.image-frame {
+    border: 3px solid white;
+    border-radius: 1rem;
+    aspect-ratio: 1;
+    width: 100%;
+
+    .image-modal-btn {
+        width: 100%;
+        border-radius: 1rem;
+
+        .modal-btn-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 0.8rem;
+        }
+    }
+
+    .modal {
+        width: fit-content;
+        height: fit-content;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        overflow: hidden;
+
+        .modal-body {
+
+            img {
+                max-width: 80vw;
+                max-height: 80vh;
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+    }
+}
+</style>
