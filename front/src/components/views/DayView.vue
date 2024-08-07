@@ -110,23 +110,21 @@ export default {
 
                     <div class="stops">
                         <template v-if="stops">
-                            <template v-for="stop in stops">
-
-                                <div class="accordion accordion-flush mb-1" :id="`stop-${stop.id}`">
+                            <div class="accordion" id="stops-accordion">
+                                <template v-for="stop in stops">
                                     <div class="accordion-item">
-                                        <h2 class="accordion-header" :id="`flush-heading-stop-${stop.id}`">
+                                        <h2 class="accordion-header" :id="`heading-stop-${stop.id}`">
                                             <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                :data-bs-target="`#flush-collapse-stop-${stop.id}`" aria-expanded="true"
-                                                :aria-controls="`flush-collapse-stop-${stop.id}`">
+                                                data-bs-toggle="collapse" :data-bs-target="`#collapse-stop-${stop.id}`"
+                                                aria-expanded="true" :aria-controls="`collapse-stop-${stop.id}`">
                                                 <i class="fa-solid fa-location-dot me-3"></i>
                                                 <strong>{{ stop.name }}</strong>
                                             </button>
                                         </h2>
-                                        <div :id="`flush-collapse-stop-${stop.id}`"
+                                        <div :id="`collapse-stop-${stop.id}`"
                                             class="accordion-collapse collapse bg-success-subtle"
-                                            :aria-labelledby="`flush-heading-stop-${stop.id}`"
-                                            :data-bs-parent="`#stop-${stop.id}`">
+                                            :aria-labelledby="`heading-stop-${stop.id}`"
+                                            data-bs-parent="#stops-accordion">
                                             <div class="accordion-body">
                                                 <div class="row">
                                                     <div class="col col-9">
@@ -188,8 +186,8 @@ export default {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </template>
                     </div>
                 </div>
