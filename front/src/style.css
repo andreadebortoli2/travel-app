@@ -6,7 +6,7 @@
 }
 
 header {
-    background-color: rgba(255, 154, 0, 1);
+    background-color: rgb(53, 170, 220);
 }
 
 #home,
@@ -16,7 +16,7 @@ header {
     padding-top: 3rem;
     min-height: 100vh;
     background: rgb(12, 134, 103);
-    background: linear-gradient(0deg, rgba(89, 182, 159, 1) 95%, rgba(255, 154, 0, 1) 100%);
+    background: linear-gradient(0deg, rgb(56, 189, 156) 95%, rgba(53, 170, 220, 1) 100%);
 }
 
 #map {

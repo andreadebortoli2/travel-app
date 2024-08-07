@@ -63,7 +63,8 @@ export default {
             </h2>
         </button>
 
-        <div class="offcanvas offcanvas-start w-50" tabindex="-1" id="new-day" aria-labelledby="new-day-offcanvas">
+        <div class="offcanvas offcanvas-start w-50 bg-info-subtle" tabindex="-1" id="new-day"
+            aria-labelledby="new-day-offcanvas">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="new-day-offcanvas">
                     New day
@@ -100,7 +101,7 @@ export default {
 
 
                     <div class="my-3">
-                        <button class="form-control" type="submit" :disabled="loading">
+                        <button class="form-control btn btn-light" type="submit" :disabled="loading">
                             {{ loading ? 'Creating...' : 'Add a new day' }}
                         </button>
                     </div>

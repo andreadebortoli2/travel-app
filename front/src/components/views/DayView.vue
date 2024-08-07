@@ -101,7 +101,7 @@ export default {
                         {{ day.description }}
                     </p>
                     <RouterLink :to="{ name: 'add-stop', params: { id: day.id, date: day.date } }">
-                        <button class="btn btn-outline-light text-primary-emphasis" type="button">
+                        <button class="btn btn-outline-light text-primary-emphasis mb-3" type="button">
                             <h2 class="m-0">
                                 <div v-html="store.addIcon"></div>
                             </h2>
@@ -131,7 +131,12 @@ export default {
                                                 <div class="row">
                                                     <div class="col col-9">
                                                         <p>{{ stop.notes }}</p>
-                                                        <div>{{ stop.rating }}</div>
+                                                        <template v-for="star in stop.rating">
+                                                            <i class="fa-solid fa-star"></i>
+                                                        </template>
+                                                        <template v-for="emptyStar in 5 - stop.rating">
+                                                            <i class="fa-regular fa-star"></i>
+                                                        </template>
                                                         <div class="d-flex">
                                                             <button class="btn">
                                                                 <RouterLink
@@ -198,6 +203,10 @@ export default {
 </template>
 
 <style scoped>
+.fa-star {
+    color: goldenrod;
+}
+
 .image-frame {
     border: 3px solid white;
     border-radius: 1rem;

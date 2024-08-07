@@ -67,15 +67,16 @@ export default {
         <div v-html="store.editIcon"></div>
     </button>
 
-    <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-day-${day.id}`"
+    <div class="offcanvas offcanvas-end w-50 bg-info-subtle" tabindex="-1" :id="`edit-day-${day.id}`"
         :aria-labelledby="`edit-day-${day.id}-offcanvas`">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" :id="`edit-day-${day.id}-offcanvas`">
-                Edit day: {{ day.title }}
+                Edit day:
             </h5>
             <button type="button" class="btn-close" :id="`close-update-day-offcanvas-${day.id}`"
                 data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+        <h2 class="text-center px-2 text-success">{{ day.title }}</h2>
 
         <div class="offcanvas-body">
             <form @submit.prevent="editDay(day.id)">
@@ -101,7 +102,7 @@ export default {
                 </div>
 
                 <div class="my-3">
-                    <button class="form-control" type="submit" :disabled="loading">
+                    <button class="form-control btn btn-light" type="submit" :disabled="loading">
                         {{ loading ? 'Updating...' : 'Update the trip' }}
                     </button>
                 </div>

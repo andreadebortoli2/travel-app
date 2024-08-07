@@ -55,7 +55,8 @@ export default {
         </h2>
     </button>
 
-    <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="new-trip" aria-labelledby="new-trip-offcanvas">
+    <div class="offcanvas offcanvas-end w-50 bg-info-subtle" tabindex="-1" id="new-trip"
+        aria-labelledby="new-trip-offcanvas">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="new-trip-offcanvas">
                 New trip
@@ -80,7 +81,7 @@ export default {
                 </div>
 
                 <div class="my-3">
-                    <button class="form-control" type="submit" :disabled="loading">
+                    <button class="form-control btn btn-light" type="submit" :disabled="loading">
                         {{ loading ? 'Creating...' : 'Add a new trip' }}
                     </button>
                 </div>
