@@ -163,6 +163,8 @@ export default {
                             <div class="d-flex justify-content-between w-50">
                                 <div class="image">
                                     <img :src="imagePreview" alt="" v-if="imagePreview">
+                                    <img v-else src="/landscape-placeholder.svg" alt="">
+
                                 </div>
                                 <div class="btn btn-danger mx-3" v-html="store.trashIcon"></div>
                             </div>

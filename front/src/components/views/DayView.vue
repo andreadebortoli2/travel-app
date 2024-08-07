@@ -180,6 +180,10 @@ export default {
                                                                     </div>
                                                                 </div>
                                                             </template>
+                                                            <template v-else>
+                                                                <img class="image-placeholder"
+                                                                    src="/landscape-placeholder.svg" alt="">
+                                                            </template>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -242,6 +246,12 @@ export default {
                 object-fit: contain;
             }
         }
+    }
+
+    .image-placeholder {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 0.8rem;
     }
 }
 </style>

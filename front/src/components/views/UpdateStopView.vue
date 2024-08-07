@@ -11,6 +11,7 @@ export default {
         return {
             store,
             stop: '',
+            stopImage: null,
             updateStopName: '',
             updateStopNotes: '',
             updateStopRating: '',
@@ -29,6 +30,7 @@ export default {
             await axios.get(store.baseApiUrl + 'stop' + id).then(response => {
                 // console.log(response.data.stop[0]);
                 this.stop = ''
+                this.stopImage = null
                 this.updateDayId = ''
                 this.updateStopName = ''
                 this.updateStopLongitude = ''
@@ -37,6 +39,7 @@ export default {
                 this.updateStopNotes = ''
                 this.updateStopRating = ''
                 this.stop = response.data.stop[0]
+                this.stopImage = this.stop.image
                 this.updateDayId = this.stop.day_id
                 this.updateStopName = this.stop.name
                 this.updateStopLongitude = this.stop.position_longitude
@@ -177,6 +180,7 @@ export default {
             axios.post(store.baseApiUrl + 'delete-stop-image/' + this.$route.params.id, data).then(response => {
                 if (response.data.success) {
                     // console.log(response.data.message);
+                    this.stopImage = null
                 }
             }).catch(error => {
                 console.log(error);
@@ -227,10 +231,12 @@ export default {
                             </div>
                             <div class="d-flex justify-content-between">
                                 <div class="image">
-                                    <img :src="store.imageBaseUrl + stop.image" alt="" v-if="stop.image">
+                                    <img :src="store.imageBaseUrl + stop.image" alt="" v-if="stopImage !== null">
+                                    <img v-else src="/landscape-placeholder.svg" alt="">
                                 </div>
                                 <div class="image">
                                     <img :src="imagePreviewUrl" alt="" v-if="imagePreviewUrl">
+                                    <img v-else src="/landscape-placeholder.svg" alt="">
                                 </div>
                             </div>
                             <div class="w-50 text-center" v-if="stop.image">
