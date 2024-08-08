@@ -28,16 +28,25 @@ export default {
             })
         },
         // map functions
-        addMap() {
-            const map = tt.map({
+        addMapSm() {
+            const mapSm = tt.map({
                 key: store.mapKey,
-                container: "map",
+                container: 'map-sm',
             })
 
-            return map
+            return mapSm
         },
-        addMarkers(map) {
+        addMapLg() {
+            const mapLg = tt.map({
+                key: store.mapKey,
+                container: 'map-lg',
+            })
+
+            return mapLg
+        },
+        addMarkers(mapSm, mapLg) {
             if (this.stops.length > 0) {
+                console.log(mapSm.mapLg);
 
                 let longitudes = []
                 let latitudes = []
@@ -47,9 +56,11 @@ export default {
                     longitudes.push(stop.position_longitude)
                     latitudes.push(stop.position_latitude)
                     let position = [stop.position_longitude, stop.position_latitude]
-                    let marker = new tt.Marker().setLngLat(position).addTo(map)
+                    let markerS = new tt.Marker().setLngLat(position).addTo(mapSm)
+                    let markerL = new tt.Marker().setLngLat(position).addTo(mapLg)
                     let popup = new tt.Popup().setText(stop.name)
-                    marker.setPopup(popup)
+                    markerS.setPopup(popup)
+                    markerL.setPopup(popup)
                 })
 
                 let ne = [Math.max(...longitudes), Math.max(...latitudes)]
@@ -58,11 +69,17 @@ export default {
                 var llb = new tt.LngLatBounds(sw, ne)
 
                 if (this.stops.length === 1) {
-                    map.setZoom(8)
-                    map.setCenter(ne)
+                    mapSm.setZoom(8)
+                    mapSm.setCenter(ne)
+                    mapLg.setZoom(8)
+                    mapLg.setCenter(ne)
                 } else {
-                    map.setZoom(0)
-                    map.fitBounds(llb, {
+                    mapSm.setZoom(0)
+                    mapSm.fitBounds(llb, {
+                        padding: { top: 40, bottom: 10, left: 25, right: 25 }
+                    })
+                    mapLg.setZoom(0)
+                    mapLg.fitBounds(llb, {
                         padding: { top: 40, bottom: 10, left: 25, right: 25 }
                     })
                 }
@@ -71,7 +88,7 @@ export default {
     },
     async mounted() {
         await this.getSingleDay()
-        this.addMarkers(this.addMap())
+        this.addMarkers(this.addMapSm(), this.addMapLg())
     }
 }
 </script>
@@ -79,8 +96,8 @@ export default {
 <template>
     <section id="day">
         <div class="container">
-            <div class="row">
-                <div class="col">
+            <div class="row row-cols-1 row-cols-md-2">
+                <div class="col mb-3">
                     <!-- left col -->
                     <div class="d-flex justify-content-between">
                         <h2 class="w-50">
@@ -107,6 +124,11 @@ export default {
                             </h2>
                         </button>
                     </RouterLink>
+
+                    <!-- map small col -->
+                    <div class="col" id="map-sm-container">
+                        <div id='map-sm'></div>
+                    </div>
 
                     <div class="stops">
                         <template v-if="stops">
@@ -195,9 +217,9 @@ export default {
                         </template>
                     </div>
                 </div>
-                <div class="col">
-                    <!-- right col -->
-                    <div id='map'></div>
+                <!-- right col -->
+                <div class="col" id="map-lg-container">
+                    <div id='map-lg'></div>
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ export default {
             newStopName: '',
             newStopPositionLongitude: '',
             newStopPositionLatitude: '',
-            newStopImage: '',
+            newStopImage: {},
             newStopNotes: '',
             newStopRating: '',
             loading: false,
@@ -73,9 +73,13 @@ export default {
         },
         // map
         addMap() {
-            const map = tt.map({
+            const mapSm = tt.map({
                 key: store.mapKey,
-                container: "map",
+                container: 'map-sm',
+            })
+            const mapLg = tt.map({
+                key: store.mapKey,
+                container: 'map-lg',
             })
 
             var options = {
@@ -90,24 +94,39 @@ export default {
                     resultSet: "poi"
                 },
             }
-            var ttSearchBox = new SearchBox(services, options)
-            map.addControl(ttSearchBox, "top-left")
-            ttSearchBox.updateOptions({
+            var ttSearchBoxSm = new SearchBox(services, options)
+            mapSm.addControl(ttSearchBoxSm, "top-left")
+            ttSearchBoxSm.updateOptions({
+                minNumberOfCharacters: 3,
+                labels: {
+                    placeholder: "Where are you going*?",
+                },
+            })
+            var ttSearchBoxLg = new SearchBox(services, options)
+            mapLg.addControl(ttSearchBoxLg, "top-left")
+            ttSearchBoxLg.updateOptions({
                 minNumberOfCharacters: 3,
                 labels: {
                     placeholder: "Where are you going*?",
                 },
             })
 
-            ttSearchBox.on("tomtom.searchbox.resultselected", this.handleResultSelection)
-            ttSearchBox.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
+            ttSearchBoxSm.on("tomtom.searchbox.resultselected", this.handleResultSelection)
+            ttSearchBoxSm.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
+            ttSearchBoxLg.on("tomtom.searchbox.resultselected", this.handleResultSelection)
+            ttSearchBoxLg.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
 
+            let map = [mapSm, mapLg]
             return map
         },
         handleResultSelection(e) {
             // console.log("selected", e);
 
             let map = this.addMap()
+
+            let mapSm = map[0]
+            let mapLg = map[1]
+
             let result = e.data.result
 
             if (result.type === 'POI') {
@@ -117,11 +136,15 @@ export default {
             }
 
             let position = [result.position.lng, result.position.lat]
-            let marker = new tt.Marker().setLngLat(position).addTo(map)
+            let markerSm = new tt.Marker().setLngLat(position).addTo(mapSm)
+            let markerLg = new tt.Marker().setLngLat(position).addTo(mapLg)
             let popup = new tt.Popup().setText(this.newStopName)
-            marker.setPopup(popup)
-            map.setZoom(8)
-            map.setCenter(position)
+            markerSm.setPopup(popup)
+            markerLg.setPopup(popup)
+            mapSm.setZoom(8)
+            mapSm.setCenter(position)
+            mapLg.setZoom(8)
+            mapLg.setCenter(position)
 
             this.newStopPositionLongitude = result.position.lng
             this.newStopPositionLatitude = result.position.lat
@@ -145,6 +168,11 @@ export default {
                             <label for="new-stop-title" class="form-label">Name / Location :</label>
                             <input type="text" class="form-control" name="new-stop-title" id="new-stop-title"
                                 placeholder="Rome" v-model="newStopName" />
+                        </div>
+
+                        <!-- map small col -->
+                        <div class="col" id="map-sm-container">
+                            <div id='map-sm'></div>
                         </div>
 
                         <div class="mb-3">
@@ -191,9 +219,9 @@ export default {
                         <div v-for="error in errors">{{ error[0] }}</div>
                     </div>
                 </div>
-                <div class="col">
-                    <!-- right col -->
-                    <div id='map'></div>
+                <!-- right col -->
+                <div class="col" id="map-lg-container">
+                    <div id='map-lg'></div>
                 </div>
             </div>
         </div>

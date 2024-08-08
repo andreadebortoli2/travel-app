@@ -61,15 +61,16 @@ export default {
         <div v-html="store.editIcon"></div>
     </button>
 
-    <div class="offcanvas offcanvas-end w-50" tabindex="-1" :id="`edit-trip-${trip.id}`"
+    <div class="offcanvas offcanvas-end bg-info-subtle" tabindex="-1" :id="`edit-trip-${trip.id}`"
         :aria-labelledby="`edit-trip-${trip.id}-offcanvas`">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" :id="`edit-trip-${trip.id}-offcanvas`">
-                Edit trip: {{ trip.title }}
+                Edit trip:
             </h5>
             <button type="button" class="btn-close" :id="`close-update-trip-offcanvas-${trip.id}`"
                 data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+        <h3 class="text-center text-success mx-2"> {{ trip.title }}</h3>
 
         <div class="offcanvas-body">
             <form @submit.prevent="editTrip(trip.id)">
@@ -89,7 +90,7 @@ export default {
                 </div>
 
                 <div class="my-3">
-                    <button class="form-control" type="submit" :disabled="loading">
+                    <button class="form-control btn btn-light" type="submit" :disabled="loading">
                         {{ loading ? 'Updating...' : 'Update the trip' }}
                     </button>
                 </div>

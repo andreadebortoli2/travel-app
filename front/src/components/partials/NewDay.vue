@@ -3,7 +3,7 @@ import axios from 'axios';
 import { store } from '../../store';
 
 export default {
-    name: 'NewTrip',
+    name: 'NewDay',
     props: {
         singleTrip: Object
     },
@@ -63,7 +63,7 @@ export default {
             </h2>
         </button>
 
-        <div class="offcanvas offcanvas-start w-50 bg-info-subtle" tabindex="-1" id="new-day"
+        <div class="offcanvas offcanvas-start bg-info-subtle" tabindex="-1" id="new-day"
             aria-labelledby="new-day-offcanvas">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="new-day-offcanvas">
@@ -71,11 +71,6 @@ export default {
                 </h5>
                 <button type="button" class="btn-close" id="close-new-day-offcanvas" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
-            </div>
-
-
-            <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
-                <div v-for="error in errors">{{ error[0] }}</div>
             </div>
 
             <div class="offcanvas-body">
@@ -106,6 +101,10 @@ export default {
                         </button>
                     </div>
                 </form>
+
+                <div class="errors text-danger m-3" v-if="Object.keys(this.errors).length !== 0">
+                    <div v-for="error in errors">{{ error[0] }}</div>
+                </div>
             </div>
         </div>
     </div>

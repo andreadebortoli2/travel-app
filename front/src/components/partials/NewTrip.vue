@@ -55,7 +55,7 @@ export default {
         </h2>
     </button>
 
-    <div class="offcanvas offcanvas-end w-50 bg-info-subtle" tabindex="-1" id="new-trip"
+    <div class="offcanvas offcanvas-end bg-info-subtle" tabindex="-1" id="new-trip"
         aria-labelledby="new-trip-offcanvas">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="new-trip-offcanvas">
@@ -94,6 +94,4 @@ export default {
     </div>
 </template>
 
-<style scoped>
-.btn {}
-</style>
+<style scoped></style>

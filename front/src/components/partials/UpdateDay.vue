@@ -67,7 +67,7 @@ export default {
         <div v-html="store.editIcon"></div>
     </button>
 
-    <div class="offcanvas offcanvas-end w-50 bg-info-subtle" tabindex="-1" :id="`edit-day-${day.id}`"
+    <div class="offcanvas offcanvas-end bg-info-subtle" tabindex="-1" :id="`edit-day-${day.id}`"
         :aria-labelledby="`edit-day-${day.id}-offcanvas`">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" :id="`edit-day-${day.id}-offcanvas`">

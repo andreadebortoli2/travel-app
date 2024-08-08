@@ -58,7 +58,7 @@ export default {
 <template>
     <section id="home">
         <div class="container">
-            <div class="row">
+            <div class="row row-cols-1 row-cols-md-2">
                 <!-- left col -->
                 <div class="col mt-4">
 
@@ -68,7 +68,7 @@ export default {
                             @click="getSingleTrip(trip.id)">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
-                                    <p class="card-text w-75 text-primary-emphasis">{{ trip.start_date }}</p>
+                                    <p class="card-text text-primary-emphasis">{{ trip.start_date }}</p>
                                     <div>
                                         <!-- update trip offcanvas -->
                                         <UpdateTrip :trip="trip" @update-trip="getTrips()" />
@@ -80,23 +80,61 @@ export default {
                                 <h4 class="card-title">{{ trip.title }}</h4>
                             </div>
                         </div>
+
+                        <!-- single trip col small -->
+                        <div class="col my-4" id="single-trip-column-screen-sm">
+                            <template v-if="singleTrip !== null">
+                                <template v-if="trip.id === singleTrip.id">
+                                    <div class="card text-info-emphasis bg-info-subtle"
+                                        :id="`single-trip-${singleTrip.id}`">
+                                        <div class="card-body">
+                                            <h3 class="card-title">{{ singleTrip.title }}</h3>
+                                            <div class="card-text">
+                                                <div class="table-responsive">
+                                                    <table
+                                                        class="table table-striped table-hover table-borderless table-info align-middle">
+                                                        <tbody>
+                                                            <template v-for="day in singleTripDays">
+                                                                <tr>
+                                                                    <RouterLink
+                                                                        :to="{ name: 'day', params: { id: day.id, date: day.date } }">
+                                                                        <td class="text-primary-emphasis w-25 p-2">{{
+                                                                            day.date }}
+                                                                        </td>
+                                                                        <td class="text-success" v-if="day.title">
+                                                                            <strong>{{
+                                                                                day.title
+                                                                                }}</strong>
+                                                                        </td>
+                                                                    </RouterLink>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="d-flex justify-content-center">
+                                                        <!-- new day offcanvas -->
+                                                        <NewDay :singleTrip="singleTrip" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
                     </template>
 
                     <!-- new trip offcanvas -->
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center mb-4">
                         <NewTrip @new-trip="getTrips()" />
                     </div>
                 </div>
                 <!-- right col -->
-                <div class="col mt-4">
+                <div class="col mt-4" id="single-trip-column-screen-lg">
                     <div v-if="singleTrip !== null">
-                        <div class="card text-info-emphasis bg-info-subtle">
+                        <div class="card text-info-emphasis bg-info-subtle" :id="`single-trip-${singleTrip.id}`">
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-baseline">
-                                    <h3 class="card-title">{{ singleTrip.title }}</h3>
-                                    <!-- new day offcanvas -->
-                                    <NewDay :singleTrip="singleTrip" />
-                                </div>
+                                <h3 class="card-title">{{ singleTrip.title }}</h3>
                                 <div class="card-text">
                                     <div class="table-responsive">
                                         <table
@@ -117,6 +155,10 @@ export default {
                                                 </template>
                                             </tbody>
                                         </table>
+                                        <div class="d-flex justify-content-center">
+                                            <!-- new day offcanvas -->
+                                            <NewDay :singleTrip="singleTrip" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -131,5 +173,17 @@ export default {
 <style scoped>
 .card {
     box-shadow: 0px 0px 40px 10px rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (min-width: 768px) {
+    #single-trip-column-screen-sm {
+        display: none
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #single-trip-column-screen-lg {
+        display: none
+    }
 }
 </style>

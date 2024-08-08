@@ -51,17 +51,25 @@ export default {
         },
         // map functions
         addMap() {
-            const map = tt.map({
+            const mapSm = tt.map({
                 key: store.mapKey,
-                container: "map",
+                container: 'map-sm',
+            })
+            const mapLg = tt.map({
+                key: store.mapKey,
+                container: 'map-lg',
             })
 
             let position = [this.updateStopLongitude, this.updateStopLatitude]
-            let marker = new tt.Marker().setLngLat(position).addTo(map)
+            let markerSm = new tt.Marker().setLngLat(position).addTo(mapSm)
             let popup = new tt.Popup().setText(this.updateStopName)
-            marker.setPopup(popup)
-            map.setZoom(8)
-            map.setCenter(position)
+            markerSm.setPopup(popup)
+            mapSm.setZoom(8)
+            mapSm.setCenter(position)
+            let markerLg = new tt.Marker().setLngLat(position).addTo(mapLg)
+            markerLg.setPopup(popup)
+            mapLg.setZoom(8)
+            mapLg.setCenter(position)
 
             var options = {
                 searchOptions: {
@@ -75,41 +83,60 @@ export default {
                     resultSet: "poi"
                 },
             }
-            var ttSearchBox = new SearchBox(services, options)
-            map.addControl(ttSearchBox, "top-left")
-            ttSearchBox.updateOptions({
+            var ttSearchBoxSm = new SearchBox(services, options)
+            mapSm.addControl(ttSearchBoxSm, "top-left")
+            ttSearchBoxSm.updateOptions({
+                minNumberOfCharacters: 3,
+                labels: {
+                    placeholder: "Where are you going*?",
+                },
+            })
+            var ttSearchBoxLg = new SearchBox(services, options)
+            mapLg.addControl(ttSearchBoxLg, "top-left")
+            ttSearchBoxLg.updateOptions({
                 minNumberOfCharacters: 3,
                 labels: {
                     placeholder: "Where are you going*?",
                 },
             })
 
-            ttSearchBox.on("tomtom.searchbox.resultselected", this.handleResultSelection)
-            ttSearchBox.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
+            ttSearchBoxSm.on("tomtom.searchbox.resultselected", this.handleResultSelection)
+            ttSearchBoxSm.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
+            ttSearchBoxLg.on("tomtom.searchbox.resultselected", this.handleResultSelection)
+            ttSearchBoxLg.on("tomtom.searchbox.resultfocused", this.handleResultSelection)
 
+            let map = [mapSm, mapLg]
             return map
         },
         handleResultSelection(e) {
             // console.log("selected", e);
 
             let map = this.addMap()
+
+            let mapSm = map[0]
+            let mapLg = map[1]
+
             let result = e.data.result
-
-            let position = [result.position.lng, result.position.lat]
-            let marker = new tt.Marker().setLngLat(position).addTo(map)
-            let popup = new tt.Popup().setText(result.address.freeformAddress)
-            marker.setPopup(popup)
-            map.setZoom(8)
-            map.setCenter(position)
-
-            this.updateStopLongitude = result.position.lng
-            this.updateStopLatitude = result.position.lat
 
             if (result.type === 'POI') {
                 this.updateStopName = result.poi.name
             } else {
                 this.updateStopName = result.address.freeformAddress
             }
+
+            let position = [result.position.lng, result.position.lat]
+            let markerSm = new tt.Marker().setLngLat(position).addTo(mapSm)
+            let markerLg = new tt.Marker().setLngLat(position).addTo(mapLg)
+            let popup = new tt.Popup().setText(this.newStopName)
+            markerSm.setPopup(popup)
+            markerLg.setPopup(popup)
+            mapSm.setZoom(8)
+            mapSm.setCenter(position)
+            mapLg.setZoom(8)
+            mapLg.setCenter(position)
+
+            this.updateStopLongitude = result.position.lng
+            this.updateStopLatitude = result.position.lat
         },
         // update axios call
         updateStop() {
@@ -212,6 +239,11 @@ export default {
                                 placeholder="Rome" v-model="updateStopName" />
                         </div>
 
+                        <!-- map small col -->
+                        <div class="col" id="map-sm-container">
+                            <div id='map-sm'></div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="update-stop-description" class="form-label">Notes :</label>
                             <textarea class="form-control" name="update-stop-description" id="update-stop-description"
@@ -266,9 +298,9 @@ export default {
                         <div v-for="error in errors">{{ error[0] }}</div>
                     </div>
                 </div>
-                <div class="col">
-                    <!-- right col -->
-                    <div id='map'></div>
+                <!-- right col -->
+                <div class="col" id="map-lg-container">
+                    <div id='map-lg'></div>
                 </div>
             </div>
         </div>
