@@ -78,6 +78,10 @@ export default {
                                     </div>
                                 </div>
                                 <h4 class="card-title">{{ trip.title }}</h4>
+                                <div class="d-flex justify-content-center">
+                                    <!-- new day offcanvas -->
+                                    <NewDay :singleTrip="singleTrip" />
+                                </div>
                             </div>
                         </div>
 
@@ -88,7 +92,7 @@ export default {
                                     <div class="card text-info-emphasis bg-info-subtle"
                                         :id="`single-trip-${singleTrip.id}`">
                                         <div class="card-body">
-                                            <h3 class="card-title">{{ singleTrip.title }}</h3>
+                                            <!-- <h3 class="card-title">{{ singleTrip.title }}</h3> -->
                                             <div class="card-text">
                                                 <div class="table-responsive">
                                                     <table
@@ -111,10 +115,6 @@ export default {
                                                             </template>
                                                         </tbody>
                                                     </table>
-                                                    <div class="d-flex justify-content-center">
-                                                        <!-- new day offcanvas -->
-                                                        <NewDay :singleTrip="singleTrip" />
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -155,10 +155,6 @@ export default {
                                                 </template>
                                             </tbody>
                                         </table>
-                                        <div class="d-flex justify-content-center">
-                                            <!-- new day offcanvas -->
-                                            <NewDay :singleTrip="singleTrip" />
-                                        </div>
                                     </div>
                                 </div>
                             </div>
