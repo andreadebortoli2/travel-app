@@ -232,6 +232,10 @@ export default {
             <div class="row">
                 <div class="col m-2">
                     <!-- left col -->
+                    <RouterLink :to="{ name: 'day', params: { id: stop.day_id, date: $route.params.date } }"
+                        class="d-flex justify-content-end">
+                        <div class="btn btn-outline-light" v-html="store.backIcon"></div>
+                    </RouterLink>
                     <form @submit.prevent="updateStop()" enctype="multipart/form-data">
                         <div class="mm-3">
                             <label for="update-stop-title" class="form-label">Name / Location :</label>

@@ -7,4 +7,5 @@ export const store = {
     addIcon: "<i class=\"fa-solid fa-square-plus\"></i>",
     editIcon: "<i class=\"fa-solid fa-pen-to-square\"></i>",
     trashIcon: "<i class=\"fa-solid fa-trash\"></i>",
+    backIcon: "<i class=\"fa-solid fa-arrow-left\"></i>",
 }
