@@ -80,7 +80,7 @@ export default {
                                 <h4 class="card-title">{{ trip.title }}</h4>
                                 <div class="d-flex justify-content-center">
                                     <!-- new day offcanvas -->
-                                    <NewDay :singleTrip="singleTrip" />
+                                    <NewDay :trip="trip" />
                                 </div>
                             </div>
                         </div>

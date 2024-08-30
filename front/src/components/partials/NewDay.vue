@@ -5,7 +5,7 @@ import { store } from '../../store';
 export default {
     name: 'NewDay',
     props: {
-        singleTrip: Object
+        trip: Object
     },
     data() {
         return {
@@ -20,7 +20,7 @@ export default {
     methods: {
         createNewDay() {
             const data = {
-                trip_id: this.singleTrip.id,
+                trip_id: this.trip.id,
                 title: this.newDayTitle,
                 date: this.newDayDate,
                 description: this.newDayDescription
@@ -36,6 +36,13 @@ export default {
                     this.newDayDescription = ''
                     this.errors = {}
                     // console.log(response.data.message);
+
+                    // console.log(document.getElementById(`new-day-${this.trip.id}`).hidden)
+                    document.getElementById(`new-day-${this.trip.id}`).hidden = true
+                    let modalBackground = document.querySelector('.offcanvas-backdrop')
+                    if (modalBackground) {
+                        modalBackground.remove()
+                    }
 
                     let dayId = response.data.route.day_id
                     let dayDate = response.data.route.day_date
@@ -56,19 +63,19 @@ export default {
 
 <template>
     <button class="btn btn-outline-light text-primary-emphasis" type="button" data-bs-toggle="offcanvas"
-        :data-bs-target="`#new-day-${singleTrip.id}`" :aria-controls="`new-day-${singleTrip.id}`">
+        :data-bs-target="`#new-day-${trip.id}`" :aria-controls="`new-day-${trip.id}`">
         <h2 class="m-0">
             <div v-html="store.addIcon"></div>
         </h2>
     </button>
 
-    <div class="offcanvas offcanvas-start bg-info-subtle" tabindex="-1" :id="`new-day-${singleTrip.id}`"
-        :aria-labelledby="`new-day-${singleTrip.id}-offcanvas`">
+    <div class="offcanvas offcanvas-start bg-info-subtle" data-bs-scroll="true" tabindex="-1" :id="`new-day-${trip.id}`"
+        :aria-labelledby="`new-day-${trip.id}-offcanvas`">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" :id="`new-day-${singleTrip.id}-offcanvas`">
+            <h5 class="offcanvas-title" :id="`new-day-${trip.id}-offcanvas`">
                 New day
             </h5>
-            <button type="button" class="btn-close" :id="`close-new-day-${singleTrip.id}-offcanvas`"
+            <button type="button" class="btn-close" :id="`close-new-day-${trip.id}-offcanvas`"
                 data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
 
